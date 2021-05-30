@@ -1,0 +1,28 @@
+﻿@model ExpenseTracker.Data.Models.Dtos.ExpenseCreateDto
+@{
+    ViewData["Title"] = "Create Expense";
+}
+
+<div class="container">
+    <form asp-action="CreateExpense" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="ExpenseFrom"></label>
+            <input asp-for="ExpenseFrom" class="form-control" />
+            <span asp-validation-for="ExpenseFrom" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Value"></label>
+            <input asp-for="Value" class="form-control" />
+            <span asp-validation-for="Value" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DateTime"></label>
+            <input asp-for="DateTime" class="form-control" />
+            <span asp-validation-for="DateTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="submit" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
