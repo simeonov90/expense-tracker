@@ -11,5 +11,7 @@ namespace ExpenseTracker.Repository.IRepository
         ICollection<Expense> GetAllExpenses();
         Expense GetExpense(int expenseId);
         bool CreateExpense(Expense expense);
+        bool DeleteExpense(Expense expense);
+        bool ExpenseExists(int expenseId);
     }
 }

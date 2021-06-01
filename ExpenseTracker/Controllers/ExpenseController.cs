@@ -47,7 +47,7 @@ namespace ExpenseTracker.Controllers
             return View();
         }
 
-        [HttpGet("{expenseId:int}")]
+        [HttpGet("{expenseId:int}", Name = "GetExpense")]
         public IActionResult GetExpense(int expenseId)
         {
             var obj = this.expenseRepository.GetExpense(expenseId);
@@ -70,6 +70,24 @@ namespace ExpenseTracker.Controllers
             }
 
             return Ok(objDto);
+        }
+        
+        [HttpDelete("{expenseId:int}", Name = "DeleteExpense")]
+        public IActionResult DeleteExpense(int expenseId)
+        {
+            if (!this.expenseRepository.ExpenseExists(expenseId))
+            {
+                return NotFound();
+            }
+
+            var expenseObj = this.expenseRepository.GetExpense(expenseId);
+            if (!this.expenseRepository.DeleteExpense(expenseObj))
+            {
+                ModelState.AddModelError("", $"Something went wrong when deleting the record {expenseObj.ExpenseFrom}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }

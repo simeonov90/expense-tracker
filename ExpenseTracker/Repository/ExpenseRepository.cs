@@ -23,6 +23,17 @@ namespace ExpenseTracker.Repository
             return Save();
         }
 
+        public bool DeleteExpense(Expense expense)
+        {
+            this.db.Expenses.Remove(expense);
+            return Save();
+        }
+
+        public bool ExpenseExists(int expenseId)
+        {
+            return this.db.Expenses.Any(a => a.Id == expenseId);
+        }
+
         public ICollection<Expense> GetAllExpenses()
         {
             return this.db.Expenses.OrderBy(a => a.DateTime).ToList();
