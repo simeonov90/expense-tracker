@@ -47,7 +47,7 @@ namespace ExpenseTracker.Controllers
             return View();
         }
 
-        [HttpGet("{expenseId:int}")]
+        [HttpGet("{expenseId:int}", Name = "GetExpense")]
         public IActionResult GetExpense(int expenseId)
         {
             var obj = this.expenseRepository.GetExpense(expenseId);
