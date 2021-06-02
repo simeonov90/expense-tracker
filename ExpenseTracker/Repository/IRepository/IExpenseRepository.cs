@@ -13,5 +13,6 @@ namespace ExpenseTracker.Repository.IRepository
         bool CreateExpense(Expense expense);
         bool DeleteExpense(Expense expense);
         bool ExpenseExists(int expenseId);
+        bool Save();
     }
 }
