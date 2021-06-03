@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Repository;
 using ExpenseTracker.ExpenseTrackerMapper;
+using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.Services;
 
 namespace ExpenseTracker
 {
@@ -36,6 +38,7 @@ namespace ExpenseTracker
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IExpenseRepository, ExpenseRepository>();
+            services.AddTransient<IExpenseService, ExpenseService>();
             services.AddAutoMapper(typeof(ExpenseTrackerMappings));
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {

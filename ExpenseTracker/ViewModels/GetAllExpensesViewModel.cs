@@ -4,18 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExpenseTracker.Data.Models.Dtos
+namespace ExpenseTracker.ViewModels
 {
-    public class ExpenseCreateDto
+    public class GetAllExpensesViewModel
     {
-        [Required]
         public string ExpenseFrom { get; set; }
-
-        [Required]
         public double Value { get; set; }
-        [Required]
         public DateTime DateTime { get; set; }
-        [Required]
-        public string UserId { get; set; }
+
     }
 }

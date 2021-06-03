@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ExpenseTracker.Data.Models;
 using ExpenseTracker.Data.Models.Dtos;
+using ExpenseTracker.Infrastructure.Claims;
 using ExpenseTracker.Repository.IRepository;
+using ExpenseTracker.Services.Contacts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers
@@ -15,13 +17,16 @@ namespace ExpenseTracker.Controllers
     {
         private readonly IExpenseRepository expenseRepository;
         private readonly IMapper mapper;
-        public ExpenseController(IExpenseRepository expenseRepository, IMapper mapper)
+        private readonly IExpenseService expenseService;
+
+        public ExpenseController(IExpenseRepository expenseRepository, IMapper mapper, IExpenseService expenseService)
         {
             this.expenseRepository = expenseRepository;
             this.mapper = mapper;
+            this.expenseService = expenseService;
         }
 
-        
+
         public IActionResult CreateExpense()
         {
             return View();
@@ -30,20 +35,15 @@ namespace ExpenseTracker.Controllers
         [HttpPost]
         public IActionResult CreateExpense(ExpenseCreateDto expenseCreateDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString();
-            
-            if (expenseCreateDto == null)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var expenseObj = this.mapper.Map<Expense>(expenseCreateDto);
-            expenseObj.UserId = userId;
-            if (!this.expenseRepository.CreateExpense(expenseObj))
+            if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Something went wrong with saving date.");
-                return StatusCode(500, ModelState);
+                return View();
             }
+
+            this.expenseService.CreateExpense(expenseCreateDto, this.User.GetUserId());
+
+            
             return View();
         }
 
@@ -71,7 +71,7 @@ namespace ExpenseTracker.Controllers
 
             return Ok(objDto);
         }
-        
+
         [HttpDelete("{expenseId:int}", Name = "DeleteExpense")]
         public IActionResult DeleteExpense(int expenseId)
         {
@@ -88,6 +88,12 @@ namespace ExpenseTracker.Controllers
             }
 
             return NoContent();
+        }
+
+        public IActionResult AllExpense()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(this.expenseService.GetAllExpenses(userId));
         }
     }
 }
