@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<ExpenseTracker.ViewModels.GetAllExpensesViewModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,7 +9,7 @@
             <h4>Your Balance</h4>
             <h1 id="balance">0.00</h1>
         </div>
-        
+
         <div class="inc-exp-container">
             <div>
                 <h4>Incom</h4>
@@ -24,7 +25,9 @@
             <button id="btn-income" class="btn btn-success">Add Income</button>
             <button id="btn-expense" class="btn btn-danger">Add Expense</button>
         </div>
-        
+        <div id="add">
+
+        </div>
 
         <table class="table">
             <thead>
@@ -35,6 +38,17 @@
                     <th scope="col">Date</th>
                 </tr>
             </thead>
+            <tbody>
+                @foreach (var expense in Model)
+                {
+                    <tr>
+                        <td scope="row">Expense</td>
+                        <td>@expense.ExpenseFrom</td>
+                        <td>@expense.Value</td>
+                        <td>@expense.DateTime</td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
 </div>

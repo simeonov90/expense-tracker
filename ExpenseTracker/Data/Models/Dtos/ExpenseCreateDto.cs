@@ -13,9 +13,5 @@ namespace ExpenseTracker.Data.Models.Dtos
 
         [Required]
         public double Value { get; set; }
-        [Required]
-        public DateTime DateTime { get; set; }
-        [Required]
-        public string UserId { get; set; }
     }
 }

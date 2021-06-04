@@ -8,6 +8,11 @@ namespace ExpenseTracker.Data.Models
 {
     public class Income
     {
+        public Income()
+        {
+            DateTime = DateTime.UtcNow;
+        }
+
         [Key]
         public int Id { get; set; }
         [Required]

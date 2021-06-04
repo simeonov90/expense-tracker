@@ -6,21 +6,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ExpenseTracker.Models;
+using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.Infrastructure.Claims;
 
 namespace ExpenseTracker.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IExpenseService expenseService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IExpenseService expenseService)
         {
             _logger = logger;
+            this.expenseService = expenseService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(this.expenseService.GetAllExpenses(this.User.GetUserId()));
         }
 
         public IActionResult Privacy()

@@ -8,6 +8,10 @@ namespace ExpenseTracker.Data.Models
 {
     public class Expense
     {
+        public Expense()
+        {
+            DateTime = DateTime.Now;
+        }
         [Key]
         public int Id { get; set; }
         [Required]
@@ -15,9 +19,10 @@ namespace ExpenseTracker.Data.Models
         [Required]
         public double Value { get; set; }
         [Required]
+        [DataType(DataType.DateTime)]
         public DateTime DateTime { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-
+        
     }
 }
