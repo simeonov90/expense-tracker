@@ -1,38 +1,28 @@
 ﻿
+const form = document.getElementById('form');
 const btnExpense = document.getElementById('btn-expense');
 const addForm = document.getElementById('add');
-const closeBtn = document.getElementById('close');
-
-function addExpense() {
-    addForm.innerHTML = '';
-
-    var div = 
-        `<form asp-action="CreateExpense" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="ExpenseFrom"></label>
-            <input asp-for="ExpenseFrom" class="form-control" />
-            <span asp-validation-for="ExpenseFrom" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Value"></label>
-            <input asp-for="Value" class="form-control" />
-            <span asp-validation-for="Value" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="submit" class="btn btn-primary" />
-              
-                <button onclick="closeForm()" class="btn"><i class="fa fa-times"></i></button>
-        </div>
-    </form>`
-
-    addForm.innerHTML += div;
-}
+const expenseVal = document.getElementById('expense');
+const valueVal = document.getElementById('value');
 
 function closeForm() {
     addForm.innerHTML = '';
 };
 
+function sendRequest() {
+    let url = '/Expense/CreateExpense';
+    let xhr = new XMLHttpRequest()
+    xhr.open("POST", url, true)
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
+
+    let body = JSON.stringify({ expenseFrom: expenseVal.value, value: valueVal.value });
+    xhr.send(body);
+
+    form.reset();
+};
+
 btnExpense.addEventListener('click', function () {
-    addExpense();
+    submitForm();
 });
+
+

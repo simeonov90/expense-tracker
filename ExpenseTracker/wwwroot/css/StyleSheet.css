@@ -75,4 +75,19 @@ h4 {
     text-align: center;
     padding: 20px;
 }
+.add {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+#form {
+    margin: 15px;
+    padding-bottom: 5px;
+}
+
+.close-btn {
+    float: right;
+}
+
+
+
 

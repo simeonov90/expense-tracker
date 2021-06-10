@@ -21,6 +21,7 @@ namespace ExpenseTracker.Data.Models
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime DateTime { get; set; }
+        [Required]
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         

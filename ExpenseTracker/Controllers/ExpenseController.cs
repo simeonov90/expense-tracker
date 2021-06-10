@@ -33,18 +33,21 @@ namespace ExpenseTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateExpense(ExpenseCreateDto expenseCreateDto)
+        public IActionResult CreateExpense([FromBody]ExpenseCreateDto expenseCreateDto)
         {
-            if (!ModelState.IsValid)
+            if (expenseCreateDto == null)
             {
-                ModelState.AddModelError("", "Something went wrong with saving date.");
-                return View();
+                return BadRequest(ModelState);
             }
 
-            this.expenseService.CreateExpense(expenseCreateDto, this.User.GetUserId());
-
             
-            return View();
+            if (!this.expenseService.CreateExpense(expenseCreateDto, this.User.GetUserId()))
+            {
+                ModelState.AddModelError("", "Something went wrong with saving date.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Json("Ok");
         }
 
         [HttpGet("{expenseId:int}", Name = "GetExpense")]

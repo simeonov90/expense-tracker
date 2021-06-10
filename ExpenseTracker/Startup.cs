@@ -52,11 +52,13 @@ namespace ExpenseTracker
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews(configure => 
-            {
-                configure.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            //services.AddControllersWithViews(configure => 
+            //{
+            //    configure.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            //});
+            services.AddControllers().AddNewtonsoftJson();
             services.AddRazorPages();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
