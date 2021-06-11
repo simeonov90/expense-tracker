@@ -4,10 +4,18 @@ const btnExpense = document.getElementById('btn-expense');
 const addForm = document.getElementById('add');
 const expenseVal = document.getElementById('expense');
 const valueVal = document.getElementById('value');
-
+addForm.style.display = "none";
 function closeForm() {
-    addForm.innerHTML = '';
+    addForm.style.display = "none";
 };
+
+function showExpenseForm() {
+    if (addForm.style.display === "none") {
+        addForm.style.display = "block";
+    } else {
+        addForm.style.display = "none";
+    }
+}
 
 function sendRequest() {
     let url = '/Expense/CreateExpense';
@@ -20,9 +28,5 @@ function sendRequest() {
 
     form.reset();
 };
-
-btnExpense.addEventListener('click', function () {
-    submitForm();
-});
 
 
