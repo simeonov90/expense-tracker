@@ -22,9 +22,9 @@ namespace ExpenseTracker.Controllers
             this.expenseService = expenseService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(this.expenseService.GetAllExpenses(this.User.GetUserId()));
+            return View(await this.expenseService.GetAllExpenses(this.User.GetUserId()));
         }
 
         public IActionResult Privacy()

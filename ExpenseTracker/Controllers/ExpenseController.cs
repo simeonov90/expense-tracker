@@ -33,15 +33,14 @@ namespace ExpenseTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateExpense([FromBody]ExpenseCreateDto expenseCreateDto)
+        public async Task<IActionResult> CreateExpense([FromBody]ExpenseCreateDto expenseCreateDto)
         {
             if (expenseCreateDto == null)
             {
                 return BadRequest(ModelState);
             }
-
             
-            if (!this.expenseService.CreateExpense(expenseCreateDto, this.User.GetUserId()))
+            if (!await this.expenseService.CreateExpense(expenseCreateDto, this.User.GetUserId()))
             {
                 ModelState.AddModelError("", "Something went wrong with saving date.");
                 return StatusCode(500, ModelState);
@@ -51,9 +50,9 @@ namespace ExpenseTracker.Controllers
         }
 
         [HttpGet("{expenseId:int}", Name = "GetExpense")]
-        public IActionResult GetExpense(int expenseId)
+        public async Task<IActionResult> GetExpense(int expenseId)
         {
-            var obj = this.expenseRepository.GetExpense(expenseId);
+            var obj = await this.expenseRepository.GetExpense(expenseId);
             if (obj == null)
             {
                 return NotFound();
@@ -63,9 +62,9 @@ namespace ExpenseTracker.Controllers
             return Ok(objDto);
         }
 
-        public IActionResult GetAllExpenses()
+        public async Task<IActionResult> GetAllExpenses()
         {
-            var objList = this.expenseRepository.GetAllExpenses();
+            var objList = await this.expenseRepository.GetAllExpenses();
             var objDto = new List<ExpenseDto>();
             foreach (var obj in objList)
             {
@@ -76,15 +75,15 @@ namespace ExpenseTracker.Controllers
         }
 
         [HttpDelete("{expenseId:int}", Name = "DeleteExpense")]
-        public IActionResult DeleteExpense(int expenseId)
+        public async Task<IActionResult> DeleteExpense(int expenseId)
         {
-            if (!this.expenseRepository.ExpenseExists(expenseId))
+            if (!await this.expenseRepository.ExpenseExists(expenseId))
             {
                 return NotFound();
             }
 
-            var expenseObj = this.expenseRepository.GetExpense(expenseId);
-            if (!this.expenseRepository.DeleteExpense(expenseObj))
+            var expenseObj = await this.expenseRepository.GetExpense(expenseId);
+            if (!await this.expenseRepository.DeleteExpense(expenseObj))
             {
                 ModelState.AddModelError("", $"Something went wrong when deleting the record {expenseObj.ExpenseFrom}");
                 return StatusCode(500, ModelState);
@@ -93,10 +92,10 @@ namespace ExpenseTracker.Controllers
             return NoContent();
         }
 
-        public IActionResult AllExpense()
+        public async Task<IActionResult> AllExpense()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(this.expenseService.GetAllExpenses(userId));
+            return View(await this.expenseService.GetAllExpenses(userId));
         }
     }
 }

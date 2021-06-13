@@ -22,20 +22,20 @@ namespace ExpenseTracker.Services
             this.mapper = mapper;
         }
 
-        public bool CreateExpense(ExpenseCreateDto expenseCreateDto, string userId)
+        public async Task<bool> CreateExpense(ExpenseCreateDto expenseCreateDto, string userId)
         {
             var expenseObj = this.mapper.Map<Expense>(expenseCreateDto);
             expenseObj.UserId = userId;
 
-            var obj = this.expenseRepository.CreateExpense(expenseObj);
+            var obj = await this.expenseRepository.CreateExpense(expenseObj);
 
             return obj;  
         }
 
-        public IEnumerable<GetAllExpensesViewModel> GetAllExpenses(string userId)
+        public async Task<IEnumerable<GetAllExpensesViewModel>> GetAllExpenses(string userId)
         {
-            var obj = this.expenseRepository.GetAllExpenses()
-                .Where(x => x.UserId == userId)
+            var obj = await this.expenseRepository.GetAllExpenses();
+            var viewModel = obj.Where(x => x.UserId == userId)
                 .Select(x => new GetAllExpensesViewModel
                 {
                     ExpenseFrom = x.ExpenseFrom,
@@ -44,7 +44,7 @@ namespace ExpenseTracker.Services
                 })
                 .ToList();
 
-            return obj;
+            return viewModel;
         }
     }
 }

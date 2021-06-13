@@ -9,8 +9,8 @@ namespace ExpenseTracker.Services.Contacts
 {
     public interface IExpenseService
     {
-        IEnumerable<GetAllExpensesViewModel> GetAllExpenses(string userId);
-        bool CreateExpense(ExpenseCreateDto expenseCreateDto, string userId);
+        Task<IEnumerable<GetAllExpensesViewModel>> GetAllExpenses(string userId);
+        Task<bool> CreateExpense(ExpenseCreateDto expenseCreateDto, string userId);
 
     }
 }

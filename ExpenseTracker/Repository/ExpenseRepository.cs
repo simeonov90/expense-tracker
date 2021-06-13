@@ -1,6 +1,7 @@
 ﻿using ExpenseTracker.Data;
 using ExpenseTracker.Data.Models;
 using ExpenseTracker.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,36 +18,36 @@ namespace ExpenseTracker.Repository
         }
 
 
-        public bool CreateExpense(Expense expense)
+        public async Task<bool> CreateExpense(Expense expense)
         {
-            this.db.Expenses.Add(expense);
-            return Save();
+            await this.db.Expenses.AddAsync(expense);
+            return await Save();
         }
 
-        public bool DeleteExpense(Expense expense)
+        public async Task<bool> DeleteExpense(Expense expense)
         {
             this.db.Expenses.Remove(expense);
-            return Save();
+            return await Save();
         }
 
-        public bool ExpenseExists(int expenseId)
+        public async Task<bool> ExpenseExists(int expenseId)
         {
-            return this.db.Expenses.Any(a => a.Id == expenseId);
+            return await this.db.Expenses.AnyAsync(a => a.Id == expenseId);
         }
 
-        public ICollection<Expense> GetAllExpenses()
+        public async Task<ICollection<Expense>> GetAllExpenses()
         {
-            return this.db.Expenses.OrderBy(a => a.DateTime).ToList();
+            return await this.db.Expenses.OrderBy(a => a.DateTime).ToListAsync();
         }
 
-        public Expense GetExpense(int expenseId)
+        public async Task<Expense> GetExpense(int expenseId)
         {
-            return this.db.Expenses.FirstOrDefault(e => e.Id == expenseId);
+            return await this.db.Expenses.FirstOrDefaultAsync(e => e.Id == expenseId);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            return this.db.SaveChanges() >= 0 ? true : false;
+            return await this.db.SaveChangesAsync() >= 0 ? true : false;
         }
     }
 }
