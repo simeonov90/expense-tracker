@@ -26,12 +26,6 @@ namespace ExpenseTracker.Controllers
             this.expenseService = expenseService;
         }
 
-
-        public IActionResult CreateExpense()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateExpense([FromBody]ExpenseCreateDto expenseCreateDto)
         {
