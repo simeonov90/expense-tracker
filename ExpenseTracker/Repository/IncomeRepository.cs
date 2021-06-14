@@ -30,24 +30,24 @@ namespace ExpenseTracker.Repository
             return await Save();
         }
 
-        public Task<ICollection<Income>> GetAllIncome()
+        public async Task<ICollection<Income>> GetAllIncome()
         {
-            throw new NotImplementedException();
+            return await this.db.Incomes.OrderBy(a => a.DateTime).ToListAsync();
         }
 
-        public Task<Income> GetIncome(int incomeId)
+        public async Task<Income> GetIncome(int incomeId)
         {
-            throw new NotImplementedException();
+            return await this.db.Incomes.FirstOrDefaultAsync(a => a.Id == incomeId);
         }
 
-        public Task<bool> IncomeExists(int incomeId)
+        public async Task<bool> IncomeExists(int incomeId)
         {
-            throw new NotImplementedException();
+            return await this.db.Incomes.AnyAsync(a => a.Id == incomeId);
         }
 
-        public Task<bool> Save()
+        public async Task<bool> Save()
         {
-            throw new NotImplementedException();
+            return await this.db.SaveChangesAsync() >= 0 ? true : false;
         }
     }
 }
