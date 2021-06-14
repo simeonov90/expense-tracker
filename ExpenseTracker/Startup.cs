@@ -39,6 +39,8 @@ namespace ExpenseTracker
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IExpenseRepository, ExpenseRepository>();
             services.AddTransient<IExpenseService, ExpenseService>();
+            services.AddTransient<IIncomeRepository, IncomeRepository>();
+            services.AddTransient<IIncomeService, IncomeService>();
             services.AddAutoMapper(typeof(ExpenseTrackerMappings));
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
