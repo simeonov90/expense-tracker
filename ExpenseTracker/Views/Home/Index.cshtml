@@ -22,20 +22,21 @@
         </div>
 
         <div class="button">
-            <button id="btn-income" class="btn btn-success">Add Income</button>
-            <button id="btn-expense" class="btn btn-danger" onclick="showExpenseForm()">Add Expense</button>
+            <button id="btn-income" class="btn btn-success" onclick="showIncomeSubmitForm()">Add Income</button>
+            <button id="btn-expense" class="btn btn-danger" onclick="showExpenseSubmitForm()">Add Expense</button>
         </div>
-        <div id="add" class="add">
-            <form id="form" method="post">
-                <button onclick="closeForm()" class="btn close-btn"><i class="fa fa-times"></i></button>
+
+        <div id="incomeSubmitForm" class="add">
+            <form id="income-form" method="post">
+                <span onclick="closeForm()" class="close-btn"><i class="fa fa-times"></i></span>
                 <div class="form-group">
-                    <label for="expense"></label>
-                    <input type="text" id="expense" placeholder="Enter expense" class="form-control">
+                    <label for="income"></label>
+                    <input type="text" id="income-from" placeholder="Enter income" class="form-control">
                     <small>Error message</small>
                 </div>
                 <div class="form-group">
                     <label for="value"></label>
-                    <input type="number" id="value" placeholder="Enter value" class="form-control">
+                    <input type="number" id="income-value" placeholder="Enter value" class="form-control">
                     <small>Error message</small>
                 </div>
                 <div class="form-group">
@@ -44,7 +45,25 @@
 
             </form>
         </div>
-        
+        <div id="expenseSubmitForm" class="add">
+            <form id="expense-form" method="post">
+                <span onclick="closeForm()" class="close-btn"><i class="fa fa-times"></i></span>
+                <div class="form-group">
+                    <label for="expense"></label>
+                    <input type="text" id="expense-from" placeholder="Enter expense" class="form-control">
+                    <small>Error message</small>
+                </div>
+                <div class="form-group">
+                    <label for="value"></label>
+                    <input type="number" id="expense-value" placeholder="Enter value" class="form-control">
+                    <small>Error message</small>
+                </div>
+                <div class="form-group">
+                    <input onclick="sendRequest()" value="submit" class="btn btn-primary" readonly style="cursor:pointer;" />
+                </div>
+            </form>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
