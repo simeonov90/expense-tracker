@@ -10,7 +10,7 @@ namespace ExpenseTracker.Data.Models
     {
         public Income()
         {
-            DateTime = DateTime.UtcNow;
+            DateTime = DateTime.Now ;
         }
 
         [Key]
@@ -19,7 +19,8 @@ namespace ExpenseTracker.Data.Models
         public string IncomeFrom { get; set; }
         [Required]
         public double Value { get; set; }      
-        [Required]
+        [Required]        
+        [DataType(DataType.Date)]
         public DateTime DateTime { get; set; }
         [Required]
         public string UserId { get; set; }

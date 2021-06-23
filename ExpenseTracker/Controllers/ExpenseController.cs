@@ -85,11 +85,5 @@ namespace ExpenseTracker.Controllers
 
             return NoContent();
         }
-
-        public async Task<IActionResult> AllExpense()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await this.expenseService.GetAllExpenses(userId));
-        }
     }
 }

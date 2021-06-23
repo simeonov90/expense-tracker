@@ -4,7 +4,6 @@ using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Repository;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contacts;
-using ExpenseTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,21 +29,6 @@ namespace ExpenseTracker.Services
             var obj = await this.expenseRepository.CreateExpense(expenseObj);
 
             return obj;  
-        }
-
-        public async Task<IEnumerable<GetAllExpensesViewModel>> GetAllExpenses(string userId)
-        {
-            var obj = await this.expenseRepository.GetAllExpenses();
-            var viewModel = obj.Where(x => x.UserId == userId)
-                .Select(x => new GetAllExpensesViewModel
-                {
-                    ExpenseFrom = x.ExpenseFrom,
-                    Value = x.Value,
-                    DateTime = x.DateTime
-                })
-                .ToList();
-
-            return viewModel;
         }
     }
 }

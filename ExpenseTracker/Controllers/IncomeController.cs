@@ -8,6 +8,7 @@ using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Infrastructure.Claims;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contacts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers
@@ -57,7 +58,7 @@ namespace ExpenseTracker.Controllers
 
         public async Task<IActionResult> GetAllIncomes()
         {
-            var objList = await this.incomeRepository.GetAllIncome();
+            var objList = await this.incomeRepository.GetAllIncome(this.User.GetUserId());
             var objDto = new List<IncomeDto>();
             foreach (var obj in objList)
             {

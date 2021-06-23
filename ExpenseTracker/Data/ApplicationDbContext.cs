@@ -38,6 +38,7 @@ namespace ExpenseTracker.Data
                 .HasMany(u => u.Incomes)
                 .WithOne(u => u.User)
                 .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

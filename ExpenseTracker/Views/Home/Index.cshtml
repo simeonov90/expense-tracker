@@ -1,5 +1,4 @@
-﻿@model IEnumerable<ExpenseTracker.ViewModels.GetAllExpensesViewModel>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -63,27 +62,21 @@
                 </div>
             </form>
         </div>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Income/Expense</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var expense in Model)
-                {
+        <button id="daily-history">Daily</button>
+        <div>
+            <table class="table">
+                <thead>
                     <tr>
-                        <td scope="row">Expense</td>
-                        <td>@expense.ExpenseFrom</td>
-                        <td>@expense.Value</td>
-                        <td>@expense.DateTime</td>
+                        <th scope="col">Income/Expense</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Date</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="table">
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

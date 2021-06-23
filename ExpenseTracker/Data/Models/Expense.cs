@@ -19,7 +19,7 @@ namespace ExpenseTracker.Data.Models
         [Required]
         public double Value { get; set; }
         [Required]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
         public DateTime DateTime { get; set; }
         [Required]
         public string UserId { get; set; }
