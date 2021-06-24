@@ -1,19 +1,24 @@
 ﻿const btnExpense = document.getElementById('btn-expense');
 const btnIncome = document.getElementById('btn-income');
-// get income and expense form
+
+// Get income and expense form
 const incomeForm = document.getElementById('income-form');
 const expenseForm = document.getElementById('expense-form');
-// get income and expense div 
+
+// Get income and expense div 
 const incomeSubmitForm = document.getElementById('incomeSubmitForm');
 const expenseSubmitForm = document.getElementById('expenseSubmitForm');
-// get input value
+
+// Get income input value
 const incomeFrom = document.getElementById('income-from');
 const incomeValue = document.getElementById('income-value');
+
+// Get expense input value
 const expenseFrom = document.getElementById('expense-from');
 const expenseValue = document.getElementById('expense-value');
 
 const table = document.getElementById('table');
-const dailyHistory = document.getElementById('daily-history');
+// const dailyHistory = document.getElementById('daily-history');
 
 let check = "";
 
@@ -68,7 +73,7 @@ async function getAllExpenses() {
         var div =
             `<tr>
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>-${item.expenseFrom}</td>
                  <td>${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -85,12 +90,50 @@ async function getDailyExpenses() {
     responeData.forEach(function (item) {
         var date = new Date(item.dateTime);
         var div =
-            `<tr>
+            `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>-${item.expenseFrom}</td>
                  <td>${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
+
+        table.innerHTML += div;
+    });
+}
+
+async function dailyHistory() {
+    const responseDailyExpense = await fetch('Expense/GetDailyExpenses');
+    const responseDataDailyExpense = await responseDailyExpense.json();
+    const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
+    const responseDataDailyIncomes = await responseDailyIncomes.json();
+
+    // Concatenate expense and income in one object and sort them by datetime in descending order
+    var objDailyHistory = responseDataDailyExpense.concat(responseDataDailyIncomes);
+    objDailyHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
+
+    console.log(objDailyHistory);
+    table.innerHTML = '';
+
+    objDailyHistory.forEach(function (item) {
+       
+        var date = new Date(item.dateTime);
+        if (item.expenseFrom) {
+            var div =
+                `<tr class="table-danger">
+                 <td scope="row">Expense</td>
+                 <td>${item.expenseFrom}</td>
+                 <td>-${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+        } else {
+            var div =
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.incomeFrom}</td>
+                 <td>${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+        }
 
         table.innerHTML += div;
     });
@@ -139,7 +182,7 @@ async function sendRequest() {
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getDailyIncomes();
+                dailyHistory();
             }
         };
         xhr.open("POST", url, true)
@@ -155,7 +198,7 @@ async function sendRequest() {
         let xhr = new XMLHttpRequest();  
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getDailyIncomes();
+                dailyHistory();
             }
         };
         xhr.open("POST", url, true);
@@ -168,7 +211,7 @@ async function sendRequest() {
 }
 
 $(table).ready(function () {
-    getAllExpenses();
+    dailyHistory();
 });
 
 
