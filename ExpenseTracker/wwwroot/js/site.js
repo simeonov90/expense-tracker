@@ -58,6 +58,44 @@ async function getDailyIncomes() {
     });
 }
 
+async function getAllExpenses() {
+    const response = await fetch('Expense/GetAllExpenses');
+    const responeData = await response.json();
+
+    table.innerHTML = '';
+    responeData.forEach(function (item) {
+        var date = new Date(item.dateTime);
+        var div =
+            `<tr>
+                 <td scope="row">Expense</td>
+                 <td>${item.expenseFrom}</td>
+                 <td>${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+        table.innerHTML += div;
+    });
+}
+
+async function getDailyExpenses() {
+    const response = await fetch('Expense/GetDailyExpenses');
+    const responeData = await response.json();
+
+    table.innerHTML = '';
+    responeData.forEach(function (item) {
+        var date = new Date(item.dateTime);
+        var div =
+            `<tr>
+                 <td scope="row">Expense</td>
+                 <td>${item.expenseFrom}</td>
+                 <td>${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+        table.innerHTML += div;
+    });
+}
+
 function closeForm() {
     expenseSubmitForm.style.display = "none";
     incomeSubmitForm.style.display = "none";
@@ -93,6 +131,8 @@ function showExpenseSubmitForm() {
     }
 }
 
+
+// post create request
 async function sendRequest() {    
     if (check === "income") {
         let url = '/Income/CreateIncome';
@@ -128,7 +168,7 @@ async function sendRequest() {
 }
 
 $(table).ready(function () {
-    getDailyIncomes();
+    getAllExpenses();
 });
 
 
