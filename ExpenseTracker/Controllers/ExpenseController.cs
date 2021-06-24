@@ -58,7 +58,7 @@ namespace ExpenseTracker.Controllers
 
         public async Task<IActionResult> GetAllExpenses()
         {
-            var objList = await this.expenseRepository.GetAllExpenses();
+            var objList = await this.expenseRepository.GetAllExpenses(this.User.GetUserId());
             var objDto = new List<ExpenseDto>();
             foreach (var obj in objList)
             {
@@ -66,6 +66,11 @@ namespace ExpenseTracker.Controllers
             }
 
             return Ok(objDto);
+        }
+
+        public async Task<IActionResult> GetDailyExpenses()
+        {
+            return Ok(await this.expenseService.DailyExpenses(this.User.GetUserId()));
         }
 
         [HttpDelete("{expenseId:int}", Name = "DeleteExpense")]

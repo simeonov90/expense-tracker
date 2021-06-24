@@ -35,9 +35,9 @@ namespace ExpenseTracker.Repository
             return await this.db.Expenses.AnyAsync(a => a.Id == expenseId);
         }
 
-        public async Task<ICollection<Expense>> GetAllExpenses()
-        {
-            return await this.db.Expenses.OrderBy(a => a.DateTime).ToListAsync();
+        public async Task<ICollection<Expense>> GetAllExpenses(string userId)
+        { 
+            return await this.db.Expenses.Where(a => a.UserId == userId).OrderByDescending(a => a.DateTime).ToListAsync();
         }
 
         public async Task<Expense> GetExpense(int expenseId)

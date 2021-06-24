@@ -8,7 +8,7 @@ namespace ExpenseTracker.Repository.IRepository
 {
     public interface IExpenseRepository
     {
-        Task<ICollection<Expense>> GetAllExpenses();
+        Task<ICollection<Expense>> GetAllExpenses(string userId);
         Task<Expense> GetExpense(int expenseId);
         Task<bool> CreateExpense(Expense expense);
         Task<bool> DeleteExpense(Expense expense);
