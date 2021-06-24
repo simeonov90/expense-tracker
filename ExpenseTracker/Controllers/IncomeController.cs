@@ -68,6 +68,11 @@ namespace ExpenseTracker.Controllers
             return Ok(objDto);
         }
 
+        public async Task<IActionResult> GetDailyIncomes()
+        {
+            return Ok(await this.incomeService.DailyIncomes(this.User.GetUserId()));
+        }
+
         [HttpDelete("{incomeId:int}", Name = "DeleteIncome")]
         public async Task<IActionResult> DeleteIncome(int incomeId)
         {

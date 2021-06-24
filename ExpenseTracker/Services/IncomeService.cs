@@ -3,6 +3,7 @@ using ExpenseTracker.Data.Models;
 using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.ViewModels.Income;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,23 @@ namespace ExpenseTracker.Services
             var obj = await this.incomeRepository.CreateIncome(incomeObj);
 
             return obj;
+        }
+
+        public async Task<ICollection<DailyIncomesViewModel>> DailyIncomes(string userId)
+        {         
+            var currDate = DateTime.Today;
+            var incomesObj = await this.incomeRepository.GetAllIncome(userId);
+
+            var dailyIncomes = incomesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate)
+                .Select(s => new DailyIncomesViewModel
+                {
+                    IncomeFrom = s.IncomeFrom,
+                    Value = s.Value,
+                    DateTime = s.DateTime
+                })
+                .ToList();
+
+            return dailyIncomes;
         }
     }
 }

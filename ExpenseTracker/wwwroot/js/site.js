@@ -39,6 +39,25 @@ async function getAllIncomes() {
     });
 }
 
+async function getDailyIncomes() {
+    const response = await fetch('Income/GetDailyIncomes');
+    const responeData = await response.json();
+
+    table.innerHTML = '';
+    responeData.forEach(function (item) {
+        var date = new Date(item.dateTime);
+        var div =
+            `<tr>
+                 <td scope="row">Income</td>
+                 <td>${item.incomeFrom}</td>
+                 <td>${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+        table.innerHTML += div;
+    });
+}
+
 function closeForm() {
     expenseSubmitForm.style.display = "none";
     incomeSubmitForm.style.display = "none";
@@ -80,7 +99,7 @@ async function sendRequest() {
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getAllIncomes();
+                getDailyIncomes();
             }
         };
         xhr.open("POST", url, true)
@@ -96,7 +115,7 @@ async function sendRequest() {
         let xhr = new XMLHttpRequest();  
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getAllIncomes();
+                getDailyIncomes();
             }
         };
         xhr.open("POST", url, true);
@@ -109,7 +128,7 @@ async function sendRequest() {
 }
 
 $(table).ready(function () {
-    getAllIncomes();
+    getDailyIncomes();
 });
 
 
