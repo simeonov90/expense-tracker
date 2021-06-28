@@ -1,5 +1,6 @@
 ﻿const btnExpense = document.getElementById('btn-expense');
 const btnIncome = document.getElementById('btn-income');
+const balance = document.getElementById('balance');
 
 // Get income and expense form
 const incomeForm = document.getElementById('income-form');
@@ -24,6 +25,15 @@ let check = "";
 
 incomeSubmitForm.style.display = "none";
 expenseSubmitForm.style.display = "none";
+
+function updateBalance(income, expense) {
+    let balanceSum = income - expense;
+    balance.innerHTML = balanceSum.toFixed(2);
+    document.getElementById('money-plus').innerHTML = "+$"+income;
+    document.getElementById('money-minus').innerHTML = "-$"+expense;
+    console.log(balanceSum.toFixed(2));
+
+}
 
 async function getAllIncomes() {
     const response = await fetch('Income/GetAllIncomes');
@@ -106,9 +116,11 @@ async function dailyHistory() {
     const responseDataDailyExpense = await responseDailyExpense.json();
     const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
     const responseDataDailyIncomes = await responseDailyIncomes.json();
-
+    var expenseSum = 0;
+    var incomeSum = 0;
     // Concatenate expense and income in one object and sort them by datetime in descending order
     var objDailyHistory = responseDataDailyExpense.concat(responseDataDailyIncomes);
+    console.log(objDailyHistory);
     objDailyHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
 
     console.log(objDailyHistory);
@@ -117,26 +129,32 @@ async function dailyHistory() {
     objDailyHistory.forEach(function (item) {
        
         var date = new Date(item.dateTime);
+        
         if (item.expenseFrom) {
             var div =
                 `<tr class="table-danger">
                  <td scope="row">Expense</td>
                  <td>${item.expenseFrom}</td>
-                 <td>-${item.value}</td>
+                 <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
+
+            expenseSum += item.value;
         } else {
             var div =
                 `<tr class="table-success">
                  <td scope="row">Income</td>
                  <td>${item.incomeFrom}</td>
-                 <td>${item.value}</td>
+                 <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
+            incomeSum += item.value
         }
 
-        table.innerHTML += div;
+        table.innerHTML += div;   
     });
+
+    updateBalance(incomeSum, expenseSum);
 }
 
 function closeForm() {
@@ -174,7 +192,6 @@ function showExpenseSubmitForm() {
     }
 }
 
-
 // post create request
 async function sendRequest() {    
     if (check === "income") {
@@ -209,6 +226,7 @@ async function sendRequest() {
         expenseForm.reset();
     }   
 }
+
 
 $(table).ready(function () {
     dailyHistory();
