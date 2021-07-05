@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ExpenseTracker.Data.Models.Dtos
 {
-    public class IncomeDayliDto
+    public class ExpenseDailyDto
     {
         [Required]
-        public string IncomeFrom { get; set; }
+        public string ExpenseFrom { get; set; }
         [Required]
         public double Value { get; set; }
         [Required]

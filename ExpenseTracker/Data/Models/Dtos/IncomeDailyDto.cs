@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExpenseTracker.ViewModels.Expense
+namespace ExpenseTracker.Data.Models.Dtos
 {
-    public class DailyExpensesViewModel
+    public class IncomeDailyDto
     {
         [Required]
-        public string ExpenseFrom { get; set; }
+        public string IncomeFrom { get; set; }
         [Required]
         public double Value { get; set; }
         [Required]

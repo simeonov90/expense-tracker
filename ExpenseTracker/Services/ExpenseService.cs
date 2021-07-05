@@ -4,7 +4,6 @@ using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Repository;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contacts;
-using ExpenseTracker.ViewModels.Expense;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +31,19 @@ namespace ExpenseTracker.Services
             return obj;  
         }
 
-        public async Task<ICollection<DailyExpensesViewModel>> DailyExpenses(string userId)
+        public async Task<ICollection<ExpenseDailyDto>> DailyExpenses(string userId)
         {
             var currDate = DateTime.Today;
             var expensesObj = await this.expenseRepository.GetAllExpenses(userId);
 
-            var dailyExpenses = expensesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate)
-                .Select(s => new DailyExpensesViewModel
-                {
-                    ExpenseFrom = s.ExpenseFrom,
-                    Value = s.Value,
-                    DateTime = s.DateTime
-                })
-                .ToList();
+            var dailyObj = expensesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate).ToList();
+            var objDto = new List<ExpenseDailyDto>();
+            foreach (var obj in dailyObj)
+            {
+                objDto.Add(this.mapper.Map<ExpenseDailyDto>(obj));
+            }
 
-            return dailyExpenses;
+            return objDto;
         }
     }
 }
