@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExpenseTracker.ViewModels.Income
+namespace ExpenseTracker.Data.Models.Dtos
 {
-    public class DailyIncomesViewModel
+    public class IncomeDayliDto
     {
         [Required]
         public string IncomeFrom { get; set; }

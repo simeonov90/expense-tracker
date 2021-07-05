@@ -32,21 +32,19 @@ namespace ExpenseTracker.Services
             return obj;
         }
 
-        public async Task<ICollection<DailyIncomesViewModel>> DailyIncomes(string userId)
+        public async Task<ICollection<IncomeDayliDto>> DailyIncomes(string userId)
         {         
             var currDate = DateTime.Today;
             var incomesObj = await this.incomeRepository.GetAllIncome(userId);
+            var dailyObj = incomesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate).ToList();
+            var objDto = new List<IncomeDayliDto>();
 
-            var dailyIncomes = incomesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate)
-                .Select(s => new DailyIncomesViewModel
-                {
-                    IncomeFrom = s.IncomeFrom,
-                    Value = s.Value,
-                    DateTime = s.DateTime
-                })
-                .ToList();
-
-            return dailyIncomes;
+            foreach (var obj in dailyObj)
+            {
+                objDto.Add(this.mapper.Map<IncomeDayliDto>(obj));
+            }
+           
+            return objDto;
         }
     }
 }

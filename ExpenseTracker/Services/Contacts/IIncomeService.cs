@@ -10,6 +10,6 @@ namespace ExpenseTracker.Services.Contacts
     public interface IIncomeService
     {
         Task<bool> CreateIncome(IncomeCreateDto incomeCreateDto, string userId);
-        Task<ICollection<DailyIncomesViewModel>> DailyIncomes(string userId);
+        Task<ICollection<IncomeDayliDto>> DailyIncomes(string userId);
     }
 }

@@ -229,7 +229,7 @@ async function sendRequest() {
 
 
 $(table).ready(function () {
-    dailyHistory();
+    getDailyIncomes();
 });
 
 
