@@ -29,72 +29,94 @@ expenseSubmitForm.style.display = "none";
 function updateBalance(income, expense) {
     let balanceSum = income - expense;
     balance.innerHTML = balanceSum.toFixed(2);
-    document.getElementById('money-plus').innerHTML = "+$"+income;
-    document.getElementById('money-minus').innerHTML = "-$"+expense;
-    console.log(balanceSum.toFixed(2));
-
+    if (income != null) {
+        document.getElementById('money-plus').innerHTML = "+$" + income.toFixed(2);
+    }
+    else {
+        document.getElementById('money-plus').innerHTML = "+$0.00";
+    }
+    if (expense != null) {
+        document.getElementById('money-minus').innerHTML = "-$" + expense.toFixed(2);
+    }
+    else {
+        document.getElementById('money-minus').innerHTML = "-$0.00";
+    }
 }
 
 async function getAllIncomes() {
     const response = await fetch('Income/GetAllIncomes');
     const responeData = await response.json();
-    
+    var incomeSum = 0;
     table.innerHTML = '';
     responeData.forEach(function (item) {
         var date = new Date(item.dateTime);
         var div =
-            `<tr>
+            `<tr class="table-success">
                  <td scope="row">Income</td>
                  <td>${item.incomeFrom}</td>
-                 <td>${item.value}</td>
+                 <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
+                 <td><span><i class="fa fa-times"></i></span></td>
              </tr>`
 
         table.innerHTML += div;
+
+        incomeSum += item.value;
     });
+
+    updateBalance(incomeSum, null);
 }
 
 async function getDailyIncomes() {
     const response = await fetch('Income/GetDailyIncomes');
     const responeData = await response.json();
-
+    var incomeSum = 0;
     table.innerHTML = '';
     responeData.forEach(function (item) {
         var date = new Date(item.dateTime);
         var div =
-            `<tr>
-                 <td scope="row">Income</td>
-                 <td>${item.incomeFrom}</td>
-                 <td>${item.value}</td>
-                 <td>${date.toLocaleDateString()}</td>
-             </tr>`
+            ` <tr class="table-success" >
+                <td scope="row">Income</td>
+                <td>${item.incomeFrom}</td>
+                <td id="inc-table-value">${item.value}</td>
+                <td>${date.toLocaleDateString()}</td>
+             </tr >`
 
         table.innerHTML += div;
+
+        incomeSum += item.value;
     });
+
+    updateBalance(incomeSum, null);
 }
 
 async function getAllExpenses() {
     const response = await fetch('Expense/GetAllExpenses');
     const responeData = await response.json();
-
+    var expenseSum = 0;
     table.innerHTML = '';
     responeData.forEach(function (item) {
         var date = new Date(item.dateTime);
         var div =
-            `<tr>
+            `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>-${item.expenseFrom}</td>
-                 <td>${item.value}</td>
+                 <td>${item.expenseFrom}</td>
+                 <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
 
         table.innerHTML += div;
+
+        expenseSum += item.value;
     });
+
+    updateBalance(null, expenseSum);
 }
 
 async function getDailyExpenses() {
     const response = await fetch('Expense/GetDailyExpenses');
     const responeData = await response.json();
+    var expenseSum = 0;
 
     table.innerHTML = '';
     responeData.forEach(function (item) {
@@ -102,13 +124,16 @@ async function getDailyExpenses() {
         var div =
             `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>-${item.expenseFrom}</td>
-                 <td>${item.value}</td>
+                 <td>${item.expenseFrom}</td>
+                 <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
-
         table.innerHTML += div;
+
+        expenseSum += item.value;
     });
+
+    updateBalance(null, expenseSum);
 }
 
 async function dailyHistory() {
@@ -229,7 +254,7 @@ async function sendRequest() {
 
 
 $(table).ready(function () {
-    getDailyIncomes();
+    dailyHistory();
 });
 
 

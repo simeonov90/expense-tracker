@@ -62,7 +62,20 @@
                 </div>
             </form>
         </div>
-        <button id="daily-history">Daily</button>
+
+        <div class="dropdown show">
+            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Show
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="#" onclick="getDailyIncomes()">daily incomes</a>
+                <a class="dropdown-item" href="#" onclick="getAllIncomes()">all incomes</a>
+                <a class="dropdown-item" href="#" onclick="getDailyExpenses()">daily expenses</a>
+                <a class="dropdown-item" href="#" onclick="getAllExpenses()">all expenses</a>
+                <a class="dropdown-item" href="#" onclick="dailyHistory()">daily history</a>
+            </div>
+        </div>
+   
         <div>
             <table class="table">
                 <thead>
