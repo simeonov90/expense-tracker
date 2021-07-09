@@ -41,9 +41,9 @@
                 <div class="form-group">
                     <input onclick="sendRequest()" value="submit" class="btn btn-primary" readonly style="cursor:pointer;" />
                 </div>
-
             </form>
         </div>
+
         <div id="expenseSubmitForm" class="add">
             <form id="expense-form" method="post">
                 <span onclick="closeForm()" class="close-btn"><i class="fa fa-times"></i></span>
@@ -63,19 +63,27 @@
             </form>
         </div>
 
-        <div class="dropdown show">
-            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Show
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="#" onclick="getDailyIncomes()">daily incomes</a>
-                <a class="dropdown-item" href="#" onclick="getAllIncomes()">all incomes</a>
-                <a class="dropdown-item" href="#" onclick="getDailyExpenses()">daily expenses</a>
-                <a class="dropdown-item" href="#" onclick="getAllExpenses()">all expenses</a>
-                <a class="dropdown-item" href="#" onclick="dailyHistory()">daily history</a>
-            </div>
+        <div id="by-date"></div>
+
+        <div class="history">
+            <select id="history">
+                <optgroup label="History">
+                    <option selected hidden>History</option>
+                    <option value="daily history">daily</option>
+                    <option value="all history">all the time</option>
+                    <option value="by date">by date</option>
+                </optgroup>
+                <optgroup label="Incomes">
+                    <option value="daily incomes">daily</option>
+                    <option value="all incomes">all</option>
+                </optgroup>
+                <optgroup label="Expenses">
+                    <option value="daily expenses">daily</option>
+                    <option value="all expenses">all</option>
+                </optgroup>
+            </select>
         </div>
-   
+
         <div>
             <table class="table">
                 <thead>
@@ -87,9 +95,9 @@
                     </tr>
                 </thead>
                 <tbody id="table">
-                    
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>

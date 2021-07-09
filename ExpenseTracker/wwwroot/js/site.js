@@ -1,4 +1,5 @@
-﻿const btnExpense = document.getElementById('btn-expense');
+﻿
+const btnExpense = document.getElementById('btn-expense');
 const btnIncome = document.getElementById('btn-income');
 const balance = document.getElementById('balance');
 
@@ -20,7 +21,9 @@ const expenseValue = document.getElementById('expense-value');
 
 const table = document.getElementById('table');
 // const dailyHistory = document.getElementById('daily-history');
-
+const dateForm = document.getElementById('by-date');
+const allHistoryBtn = document.getElementById('all-history');
+const historyList = document.getElementById('history');
 let check = "";
 
 incomeSubmitForm.style.display = "none";
@@ -137,18 +140,17 @@ async function getDailyExpenses() {
 }
 
 async function dailyHistory() {
-    const responseDailyExpense = await fetch('Expense/GetDailyExpenses');
-    const responseDataDailyExpense = await responseDailyExpense.json();
+    const responseDailyExpenses = await fetch('Expense/GetDailyExpenses');
+    const responseDataDailyExpenses = await responseDailyExpenses.json();
     const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
     const responseDataDailyIncomes = await responseDailyIncomes.json();
     var expenseSum = 0;
     var incomeSum = 0;
     // Concatenate expense and income in one object and sort them by datetime in descending order
-    var objDailyHistory = responseDataDailyExpense.concat(responseDataDailyIncomes);
-    console.log(objDailyHistory);
+    var objDailyHistory = responseDataDailyExpenses.concat(responseDataDailyIncomes);
+
     objDailyHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
 
-    console.log(objDailyHistory);
     table.innerHTML = '';
 
     objDailyHistory.forEach(function (item) {
@@ -181,10 +183,155 @@ async function dailyHistory() {
 
     updateBalance(incomeSum, expenseSum);
 }
+async function getAllHistory() {
+    const responseExpenses = await fetch('Expense/GetAllExpenses');
+    const responseDataExpenses = await responseExpenses.json();
+    const responseIncomes = await fetch('Income/GetAllIncomes');
+    const responseDataIncomes = await responseIncomes.json();
+    var expenseSum = 0;
+    var incomeSum = 0;
+    // Concatenate expense and income in one object and sort them by datetime in descending order
+    var objHistory = responseDataExpenses.concat(responseDataIncomes);
+    objHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
+
+    table.innerHTML = '';
+
+    objHistory.forEach(function (item) {
+
+        var date = new Date(item.dateTime);
+
+        if (item.expenseFrom) {
+            var div =
+                `<tr class="table-danger">
+                 <td scope="row">Expense</td>
+                 <td>${item.expenseFrom}</td>
+                 <td id="exp-table-value">-${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+            expenseSum += item.value;
+        } else {
+            var div =
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.incomeFrom}</td>
+                 <td id="inc-table-value">${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+            incomeSum += item.value
+        }
+
+        table.innerHTML += div;
+    });
+
+    updateBalance(incomeSum, expenseSum);
+}
+async function getByDate() {
+    const dateFromValue = document.getElementById('date-from').value;
+    const dateToValue = document.getElementById('date-to').value;
+
+    const responseExpenses = await fetch('Expense/GetAllExpenses');
+    const responseDataExpenses = await responseExpenses.json();
+    const responseIncomes = await fetch('Income/GetAllIncomes');
+    const responseDataIncomes = await responseIncomes.json();
+
+    var expenseSum = 0;
+    var incomeSum = 0;
+    // Concatenate expense and income in one object then filter by choosen date and sort them by datetime in descending order
+    var objHistory = responseDataExpenses.concat(responseDataIncomes);
+    var filterHistory = objHistory.filter(date => date.dateTime >= dateFromValue && date.dateTime <= dateToValue);
+    var sortedHistory = filterHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
+
+    table.innerHTML = '';
+
+    sortedHistory.forEach(function (item) {
+
+        var date = new Date(item.dateTime);
+
+        if (item.expenseFrom) {
+            var div =
+                `<tr class="table-danger">
+                 <td scope="row">Expense</td>
+                 <td>${item.expenseFrom}</td>
+                 <td id="exp-table-value">-${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+            expenseSum += item.value;
+        } else {
+            var div =
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.incomeFrom}</td>
+                 <td id="inc-table-value">${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+            incomeSum += item.value
+        }
+
+        table.innerHTML += div;
+    });
+
+    updateBalance(incomeSum, expenseSum);
+
+}
+
+function showByDateForm() {
+    dateForm.style.display = "block";
+    dateForm.innerHTML = '';
+    var div = `<form method="get">
+            <label for="from">From</label>
+            <input id="date-from" type="date" />
+            <label for="to">To</label>
+            <input id="date-to" type="date" />
+            <button onclick="getByDate()" type="button">Show</button>
+            <span onclick="closeDateForm()" class="close-btn"><i class="fa fa-times"></i></span>
+        </form>`
+    dateForm.innerHTML += div;
+}
+
+function closeDateForm() {
+    dateForm.style.display = "none";
+    dateForm.reset();
+}
+
+function showHistory() {
+    const allHistory = "all history";
+    const dailyHistoy = "daily history";
+    const byDate = "by date";
+    const dailyIncomes = "daily incomes";
+    const allIncomes = "all incomes";
+    const dailyExpenses = "daily expenses";
+    const allExpenses = "all expenses";
+
+    const selected = historyList.options[historyList.selectedIndex].value;
+
+    if (selected !== byDate) {
+        dateForm.style.display = "none";
+    }
+
+    if (selected === allHistory) {
+        getAllHistory();
+    } else if (selected === dailyHistoy) {
+        dailyHistory();
+    } else if (selected === byDate) {
+        showByDateForm();
+    } else if (selected === dailyIncomes) {
+        getDailyIncomes();
+    } else if (selected === allIncomes) {
+        getAllIncomes();
+    } else if (selected === dailyExpenses) {
+        getDailyExpenses();
+    } else if (selected === allExpenses) {
+        getAllExpenses();
+    }
+}
 
 function closeForm() {
     expenseSubmitForm.style.display = "none";
     incomeSubmitForm.style.display = "none";
+
     incomeForm.reset();
     expenseForm.reset();
 }
@@ -194,7 +341,6 @@ function showIncomeSubmitForm() {
 
     if (expenseSubmitForm.style.display === "block") {
         expenseSubmitForm.style.display = "none"
-
     }
 
     if (incomeSubmitForm.style.display === "none") {
@@ -255,6 +401,10 @@ async function sendRequest() {
 
 $(table).ready(function () {
     dailyHistory();
+});
+
+$(historyList).change(function () {
+    showHistory();
 });
 
 
