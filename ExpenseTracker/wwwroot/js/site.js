@@ -293,7 +293,6 @@ function showByDateForm() {
 
 function closeDateForm() {
     dateForm.style.display = "none";
-    dateForm.reset();
 }
 
 function showHistory() {

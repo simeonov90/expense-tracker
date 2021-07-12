@@ -86,10 +86,16 @@ h4 {
 
 .close-btn {
     float: right;
+    cursor: pointer;
 }
 
 #expense-tr {
     color: red;
+}
+
+.history {
+    display: inline-flex;
+    padding: 5px 0 5px 0;
 }
 
 
