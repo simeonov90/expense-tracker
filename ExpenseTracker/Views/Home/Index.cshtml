@@ -21,44 +21,44 @@
         </div>
 
         <div class="button">
-            <button id="btn-income" class="btn btn-success" onclick="showIncomeSubmitForm()">Add Income</button>
-            <button id="btn-expense" class="btn btn-danger" onclick="showExpenseSubmitForm()">Add Expense</button>
+            <button id="btn-income" class="btn btn-success">Add Income</button>
+            <button id="btn-expense" class="btn btn-danger">Add Expense</button>
         </div>
 
         <div id="incomeSubmitForm" class="add">
             <form id="income-form" method="post">
-                <span onclick="closeForm()" class="close-btn"><i class="fa fa-times"></i></span>
+                <span id="btn-close-income-form" class="close-btn"><i class="fa fa-times"></i></span>
                 <div class="form-group">
                     <label for="income"></label>
                     <input type="text" id="income-from" placeholder="Enter income" class="form-control">
-                    <small>Error message</small>
+                    <small id="error-income-from"></small>
                 </div>
                 <div class="form-group">
                     <label for="value"></label>
                     <input type="number" id="income-value" placeholder="Enter value" class="form-control">
-                    <small>Error message</small>
+                    <small id="error-income-value"></small>
                 </div>
                 <div class="form-group">
-                    <input onclick="sendRequest()" value="submit" class="btn btn-primary" readonly style="cursor:pointer;" />
+                    <button id="btn-income-request" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
 
         <div id="expenseSubmitForm" class="add">
             <form id="expense-form" method="post">
-                <span onclick="closeForm()" class="close-btn"><i class="fa fa-times"></i></span>
+                <span id="btn-close-expense-form" class="close-btn"><i class="fa fa-times"></i></span>
                 <div class="form-group">
                     <label for="expense"></label>
                     <input type="text" id="expense-from" placeholder="Enter expense" class="form-control">
-                    <small>Error message</small>
+                    <small id="error-expense-from"></small>
                 </div>
                 <div class="form-group">
                     <label for="value"></label>
                     <input type="number" id="expense-value" placeholder="Enter value" class="form-control">
-                    <small>Error message</small>
+                    <small id="error-expense-value"></small>
                 </div>
                 <div class="form-group">
-                    <input onclick="sendRequest()" value="submit" class="btn btn-primary" readonly style="cursor:pointer;" />
+                    <button id="btn-expense-request" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>

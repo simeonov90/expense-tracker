@@ -1,6 +1,10 @@
-﻿
-const btnExpense = document.getElementById('btn-expense');
+﻿const btnExpense = document.getElementById('btn-expense');
 const btnIncome = document.getElementById('btn-income');
+const btnCloseIncomeForm = document.getElementById('btn-close-income-form');
+const btnCloseExpenseForm = document.getElementById('btn-close-expense-form');
+const btnIncomeRequest = document.getElementById('btn-income-request');
+const btnExpenseRequest = document.getElementById('btn-expense-request');
+
 const balance = document.getElementById('balance');
 
 // Get income and expense form
@@ -22,7 +26,7 @@ const expenseValue = document.getElementById('expense-value');
 const table = document.getElementById('table');
 // const dailyHistory = document.getElementById('daily-history');
 const dateForm = document.getElementById('by-date');
-const allHistoryBtn = document.getElementById('all-history');
+
 const historyList = document.getElementById('history');
 let check = "";
 
@@ -327,11 +331,13 @@ function showHistory() {
     }
 }
 
-function closeForm() {
-    expenseSubmitForm.style.display = "none";
+function closeIncomeForm() {
     incomeSubmitForm.style.display = "none";
-
     incomeForm.reset();
+}
+
+function closeExpenseForm() {
+    expenseSubmitForm.style.display = "none";
     expenseForm.reset();
 }
 
@@ -363,17 +369,20 @@ function showExpenseSubmitForm() {
 }
 
 // post create request
-async function sendRequest() {    
-    if (check === "income") {
+async function sendRequest() {
+
+    if (check === "income") {       
         let url = '/Income/CreateIncome';
-        let xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest(); 
+        xhr.open("POST", url, true)
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 dailyHistory();
             }
         };
-        xhr.open("POST", url, true)
-        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         let body = await JSON.stringify({ incomeFrom: incomeFrom.value, value: incomeValue.value });
         xhr.send(body);
 
@@ -397,7 +406,6 @@ async function sendRequest() {
     }   
 }
 
-
 $(table).ready(function () {
     dailyHistory();
 });
@@ -405,6 +413,31 @@ $(table).ready(function () {
 $(historyList).change(function () {
     showHistory();
 });
+
+$(btnCloseIncomeForm).click(function () {
+    closeIncomeForm();
+});
+
+$(btnCloseExpenseForm).click(function () {
+    closeExpenseForm();
+});
+
+$(btnIncome).click(function () {
+    showIncomeSubmitForm();
+});
+
+$(btnExpense).click(function () {
+    showExpenseSubmitForm();
+});
+
+$(btnIncomeRequest).click(function () {
+    sendRequest();
+});
+
+$(btnExpenseRequest).click(function () {
+    sendRequest();
+});
+
 
 
 
