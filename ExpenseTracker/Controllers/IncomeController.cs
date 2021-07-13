@@ -29,7 +29,7 @@ namespace ExpenseTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateIncome([FromBody]IncomeCreateDto incomeCreateDto)
         {
-           if (incomeCreateDto == null)
+           if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

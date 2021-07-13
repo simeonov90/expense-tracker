@@ -29,7 +29,7 @@ namespace ExpenseTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateExpense([FromBody]ExpenseCreateDto expenseCreateDto)
         {
-            if (expenseCreateDto == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

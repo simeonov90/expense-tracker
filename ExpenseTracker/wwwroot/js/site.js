@@ -24,7 +24,6 @@ const expenseFrom = document.getElementById('expense-from');
 const expenseValue = document.getElementById('expense-value');
 
 const table = document.getElementById('table');
-// const dailyHistory = document.getElementById('daily-history');
 const dateForm = document.getElementById('by-date');
 
 const historyList = document.getElementById('history');
