@@ -5,6 +5,8 @@ const btnCloseExpenseForm = document.getElementById('btn-close-expense-form');
 const btnIncomeRequest = document.getElementById('btn-income-request');
 const btnExpenseRequest = document.getElementById('btn-expense-request');
 
+const errorIncomeFromMessage = document.getElementById('error-income-from');
+const errorIncomeValueMessage = document.getElementById('error-income-value');
 const balance = document.getElementById('balance');
 
 // Get income and expense form
@@ -27,7 +29,6 @@ const table = document.getElementById('table');
 const dateForm = document.getElementById('by-date');
 
 const historyList = document.getElementById('history');
-let check = "";
 
 incomeSubmitForm.style.display = "none";
 expenseSubmitForm.style.display = "none";
@@ -157,9 +158,9 @@ async function dailyHistory() {
     table.innerHTML = '';
 
     objDailyHistory.forEach(function (item) {
-       
+
         var date = new Date(item.dateTime);
-        
+
         if (item.expenseFrom) {
             var div =
                 `<tr class="table-danger">
@@ -181,7 +182,7 @@ async function dailyHistory() {
             incomeSum += item.value
         }
 
-        table.innerHTML += div;   
+        table.innerHTML += div;
     });
 
     updateBalance(incomeSum, expenseSum);
@@ -367,12 +368,38 @@ function showExpenseSubmitForm() {
     }
 }
 
-// post create request
-async function sendRequest() {
+function checkIncomeRequiredField(string, value) {
+    errorIncomeFromMessage.innerHTML = '';
+    errorIncomeValueMessage.innerHTML = '';
+    const pattern = /^[0-9]+([.][0-9]+)?$/;
+    const match = value.match(pattern);
 
-    if (check === "income") {       
-        let url = '/Income/CreateIncome';
-        let xhr = new XMLHttpRequest(); 
+    if (string === "") {
+        errorIncomeFromMessage.style.color = '#e74c3c';
+        errorIncomeFromMessage.innerText = `This field is required.`;   
+    }
+    if (value === "") {
+        errorIncomeValueMessage.style.color = '#e74c3c';
+        errorIncomeValueMessage.innerText = 'This field is required.';
+    } else if (match === null) {
+        errorIncomeValueMessage.style.color = '#e74c3c';
+        errorIncomeValueMessage.innerText = 'This price must be only numbers.';
+    }
+
+    if (string !== "" && match !== null) {
+        errorIncomeFromMessage.innerHTML = '';
+        errorIncomeValueMessage.innerHTML = '';
+        return true;
+    }
+}
+
+// post create request
+async function sendIncomeRequest() {
+
+    let url = '/Income/CreateIncome';
+    let xhr = new XMLHttpRequest();
+
+    if (checkIncomeRequiredField(incomeFrom.value, incomeValue.value) === true) {
         xhr.open("POST", url, true)
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
         xhr.onreadystatechange = function () {
@@ -384,25 +411,25 @@ async function sendRequest() {
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         let body = await JSON.stringify({ incomeFrom: incomeFrom.value, value: incomeValue.value });
         xhr.send(body);
-
         incomeForm.reset();
-    }
+    }     
+}
 
-    if (check === "expense") {
-        let url = '/Expense/CreateExpense';
-        let xhr = new XMLHttpRequest();  
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                dailyHistory();
-            }
-        };
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
-        xhr.send(body);
-        
-        expenseForm.reset();
-    }   
+async function sendExpenseRequest() {
+
+    let url = '/Expense/CreateExpense';
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            dailyHistory();
+        }
+    };
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
+    xhr.send(body);
+
+    expenseForm.reset();
 }
 
 $(table).ready(function () {
@@ -430,11 +457,11 @@ $(btnExpense).click(function () {
 });
 
 $(btnIncomeRequest).click(function () {
-    sendRequest();
+    sendIncomeRequest();
 });
 
 $(btnExpenseRequest).click(function () {
-    sendRequest();
+    sendExpenseRequest();
 });
 
 
