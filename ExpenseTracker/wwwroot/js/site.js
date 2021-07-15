@@ -7,6 +7,8 @@ const btnExpenseRequest = document.getElementById('btn-expense-request');
 
 const errorIncomeFromMessage = document.getElementById('error-income-from');
 const errorIncomeValueMessage = document.getElementById('error-income-value');
+const errorExpenseFromMessage = document.getElementById('error-expense-from');
+const errorExpenseValueMessage = document.getElementById('error-expense-value');
 const balance = document.getElementById('balance');
 
 // Get income and expense form
@@ -29,6 +31,10 @@ const table = document.getElementById('table');
 const dateForm = document.getElementById('by-date');
 
 const historyList = document.getElementById('history');
+
+// RegEx match only numbers and decimal numbers
+const pattern = /^[0-9]+([.][0-9]+)?$/;
+
 
 incomeSubmitForm.style.display = "none";
 expenseSubmitForm.style.display = "none";
@@ -371,13 +377,14 @@ function showExpenseSubmitForm() {
 function checkIncomeRequiredField(string, value) {
     errorIncomeFromMessage.innerHTML = '';
     errorIncomeValueMessage.innerHTML = '';
-    const pattern = /^[0-9]+([.][0-9]+)?$/;
-    const match = value.match(pattern);
+
+    let match = value.match(pattern);
 
     if (string === "") {
         errorIncomeFromMessage.style.color = '#e74c3c';
         errorIncomeFromMessage.innerText = `This field is required.`;   
     }
+
     if (value === "") {
         errorIncomeValueMessage.style.color = '#e74c3c';
         errorIncomeValueMessage.innerText = 'This field is required.';
@@ -393,13 +400,39 @@ function checkIncomeRequiredField(string, value) {
     }
 }
 
+function checkExpenseRequiredField(string, value) {
+    errorExpenseFromMessage.innerHTML = '';
+    errorExpenseValueMessage.innerHTML = '';
+
+    let match = value.match(pattern);
+
+    if (string === "") {
+        errorExpenseFromMessage.style.color = '#e74c3c';
+        errorExpenseFromMessage.innerText = `This field is required.`;
+    }
+
+    if (value === "") {
+        errorExpenseValueMessage.style.color = '#e74c3c';
+        errorExpenseValueMessage.innerText = 'This field is required.';
+    } else if (match === null) {
+        errorExpenseValueMessage.style.color = '#e74c3c';
+        errorExpenseValueMessage.innerText = 'This price must be only numbers.';
+    }
+
+    if (string !== "" && match !== null) {
+        errorExpenseFromMessage.innerHTML = '';
+        errorExpenseValueMessage.innerHTML = '';
+        return true;
+    }
+}
+
 // post create request
 async function sendIncomeRequest() {
 
     let url = '/Income/CreateIncome';
     let xhr = new XMLHttpRequest();
 
-    if (checkIncomeRequiredField(incomeFrom.value, incomeValue.value) === true) {
+    if (checkIncomeRequiredField(incomeFrom.value, incomeValue.value)) {
         xhr.open("POST", url, true)
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
         xhr.onreadystatechange = function () {
@@ -419,17 +452,20 @@ async function sendExpenseRequest() {
 
     let url = '/Expense/CreateExpense';
     let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            dailyHistory();
-        }
-    };
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
-    xhr.send(body);
 
-    expenseForm.reset();
+    if (checkExpenseRequiredField(expenseFrom.value, expenseValue.value)) {        
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                dailyHistory();
+            }
+        };
+        let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
+        xhr.send(body);
+        expenseForm.reset();
+    }
+    
 }
 
 $(table).ready(function () {
