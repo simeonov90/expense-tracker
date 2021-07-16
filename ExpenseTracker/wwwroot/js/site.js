@@ -31,7 +31,7 @@ const table = document.getElementById('table');
 const dateForm = document.getElementById('by-date');
 
 const historyList = document.getElementById('history');
-
+const tableTitle = document.getElementById('table-title');
 // RegEx match only numbers and decimal numbers
 const pattern = /^[0-9]+([.][0-9]+)?$/;
 
@@ -149,7 +149,7 @@ async function getDailyExpenses() {
     updateBalance(null, expenseSum);
 }
 
-async function dailyHistory() {
+async function getDailyHistory() {
     const responseDailyExpenses = await fetch('Expense/GetDailyExpenses');
     const responseDataDailyExpenses = await responseDailyExpenses.json();
     const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
@@ -306,13 +306,13 @@ function closeDateForm() {
 }
 
 function showHistory() {
-    const allHistory = "all history";
-    const dailyHistoy = "daily history";
-    const byDate = "by date";
-    const dailyIncomes = "daily incomes";
-    const allIncomes = "all incomes";
-    const dailyExpenses = "daily expenses";
-    const allExpenses = "all expenses";
+    const allHistory = "All history";
+    const dailyHistory = "Daily history";
+    const byDate = "By date";
+    const dailyIncomes = "Daily incomes";
+    const allIncomes = "All incomes";
+    const dailyExpenses = "Daily expenses";
+    const allExpenses = "All expenses";
 
     const selected = historyList.options[historyList.selectedIndex].value;
 
@@ -322,28 +322,39 @@ function showHistory() {
 
     if (selected === allHistory) {
         getAllHistory();
-    } else if (selected === dailyHistoy) {
-        dailyHistory();
+        tableTitle.innerText = allHistory;
+    } else if (selected === dailyHistory) {
+        getDailyHistory();
+        tableTitle.innerText = dailyHistory;
     } else if (selected === byDate) {
         showByDateForm();
+        tableTitle.innerText = byDate;
     } else if (selected === dailyIncomes) {
         getDailyIncomes();
+        tableTitle.innerText = dailyIncomes;
     } else if (selected === allIncomes) {
         getAllIncomes();
+        tableTitle.innerText = allIncomes;
     } else if (selected === dailyExpenses) {
         getDailyExpenses();
+        tableTitle.innerText = dailyExpenses;
     } else if (selected === allExpenses) {
         getAllExpenses();
+        tableTitle.innerText = allExpenses;
     }
 }
 
 function closeIncomeForm() {
     incomeSubmitForm.style.display = "none";
+    errorIncomeFromMessage.innerHTML = '';
+    errorIncomeValueMessage.innerHTML = '';
     incomeForm.reset();
 }
 
 function closeExpenseForm() {
     expenseSubmitForm.style.display = "none";
+    errorExpenseFromMessage.innerHTML = '';
+    errorExpenseValueMessage.innerHTML = '';
     expenseForm.reset();
 }
 
@@ -437,7 +448,7 @@ async function sendIncomeRequest() {
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                dailyHistory();
+                getDailyHistory();
             }
         };
         xhr.open("POST", url, true);
@@ -458,7 +469,7 @@ async function sendExpenseRequest() {
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                dailyHistory();
+                getDailyHistory();
             }
         };
         let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
@@ -469,7 +480,10 @@ async function sendExpenseRequest() {
 }
 
 $(table).ready(function () {
-    dailyHistory();
+    const dailyHistory = "Daily history";
+
+    getDailyHistory();
+    tableTitle.innerText = dailyHistory;
 });
 
 $(historyList).change(function () {
