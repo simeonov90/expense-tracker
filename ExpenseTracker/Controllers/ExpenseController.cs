@@ -9,10 +9,12 @@ using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Infrastructure.Claims;
 using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers
 {
+    [Authorize]
     public class ExpenseController : Controller
     {
         private readonly IExpenseRepository expenseRepository;

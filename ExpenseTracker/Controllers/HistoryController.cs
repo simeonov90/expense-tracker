@@ -1,10 +1,12 @@
 ﻿using ExpenseTracker.Infrastructure.Claims;
 using ExpenseTracker.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace ExpenseTracker.Controllers
 {
+    [Authorize]
     public class HistoryController : Controller
     {
         private readonly IHistoryService historyService;

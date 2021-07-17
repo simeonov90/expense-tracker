@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers
 {
+    [Authorize]
     public class IncomeController : Controller
     {
         private readonly IIncomeRepository incomeRepository;

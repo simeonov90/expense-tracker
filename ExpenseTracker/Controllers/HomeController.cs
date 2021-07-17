@@ -8,9 +8,11 @@ using Microsoft.Extensions.Logging;
 using ExpenseTracker.Models;
 using ExpenseTracker.Services.Contracts;
 using ExpenseTracker.Infrastructure.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpenseTracker.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
