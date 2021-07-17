@@ -66,7 +66,7 @@ async function getAllIncomes() {
         var div =
             `<tr class="table-success">
                  <td scope="row">Income</td>
-                 <td>${item.incomeFrom}</td>
+                 <td>${item.from}</td>
                  <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
                  <td><span><i class="fa fa-times"></i></span></td>
@@ -90,7 +90,7 @@ async function getDailyIncomes() {
         var div =
             ` <tr class="table-success" >
                 <td scope="row">Income</td>
-                <td>${item.incomeFrom}</td>
+                <td>${item.from}</td>
                 <td id="inc-table-value">${item.value}</td>
                 <td>${date.toLocaleDateString()}</td>
              </tr >`
@@ -113,7 +113,7 @@ async function getAllExpenses() {
         var div =
             `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>${item.from}</td>
                  <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -137,7 +137,7 @@ async function getDailyExpenses() {
         var div =
             `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>${item.from}</td>
                  <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -154,6 +154,7 @@ async function getDailyHistory() {
     const responseDataDailyExpenses = await responseDailyExpenses.json();
     const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
     const responseDataDailyIncomes = await responseDailyIncomes.json();
+
     var expenseSum = 0;
     var incomeSum = 0;
     // Concatenate expense and income in one object and sort them by datetime in descending order
@@ -171,7 +172,7 @@ async function getDailyHistory() {
             var div =
                 `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>${item.from}</td>
                  <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -181,7 +182,7 @@ async function getDailyHistory() {
             var div =
                 `<tr class="table-success">
                  <td scope="row">Income</td>
-                 <td>${item.incomeFrom}</td>
+                 <td>${item.from}</td>
                  <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -194,41 +195,38 @@ async function getDailyHistory() {
     updateBalance(incomeSum, expenseSum);
 }
 async function getAllHistory() {
-    const responseExpenses = await fetch('Expense/GetAllExpenses');
-    const responseDataExpenses = await responseExpenses.json();
-    const responseIncomes = await fetch('Income/GetAllIncomes');
-    const responseDataIncomes = await responseIncomes.json();
+    const responseAllHistory = await fetch('History/GetAll');
+    const responseDataAllHistory = await responseAllHistory.json();
+
+    const incomeHistory = "Income";
+
     var expenseSum = 0;
     var incomeSum = 0;
-    // Concatenate expense and income in one object and sort them by datetime in descending order
-    var objHistory = responseDataExpenses.concat(responseDataIncomes);
-    objHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
 
     table.innerHTML = '';
-
-    objHistory.forEach(function (item) {
+    responseDataAllHistory.forEach(function (item) {
 
         var date = new Date(item.dateTime);
 
-        if (item.expenseFrom) {
+        if (item.type === incomeHistory) {
             var div =
-                `<tr class="table-danger">
-                 <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.from}</td>
                  <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
 
-            expenseSum += item.value;
+            incomeSum += item.value;
         } else {
             var div =
-                `<tr class="table-success">
-                 <td scope="row">Income</td>
-                 <td>${item.incomeFrom}</td>
+                `<tr class="table-danger">
+                 <td scope="row">Expense</td>
+                 <td>${item.from}</td>
                  <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
-            incomeSum += item.value
+            expenseSum += item.value
         }
 
         table.innerHTML += div;
@@ -262,7 +260,7 @@ async function getByDate() {
             var div =
                 `<tr class="table-danger">
                  <td scope="row">Expense</td>
-                 <td>${item.expenseFrom}</td>
+                 <td>${item.from}</td>
                  <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -272,7 +270,7 @@ async function getByDate() {
             var div =
                 `<tr class="table-success">
                  <td scope="row">Income</td>
-                 <td>${item.incomeFrom}</td>
+                 <td>${item.from}</td>
                  <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
@@ -453,7 +451,7 @@ async function sendIncomeRequest() {
         };
         xhr.open("POST", url, true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        let body = await JSON.stringify({ incomeFrom: incomeFrom.value, value: incomeValue.value });
+        let body = await JSON.stringify({ from: incomeFrom.value, value: incomeValue.value });
         xhr.send(body);
         incomeForm.reset();
     }     
@@ -472,7 +470,7 @@ async function sendExpenseRequest() {
                 getDailyHistory();
             }
         };
-        let body = await JSON.stringify({ expenseFrom: expenseFrom.value, value: expenseValue.value });
+        let body = await JSON.stringify({ from: expenseFrom.value, value: expenseValue.value });
         xhr.send(body);
         expenseForm.reset();
     }
@@ -481,9 +479,9 @@ async function sendExpenseRequest() {
 
 $(table).ready(function () {
     const dailyHistory = "Daily history";
+    tableTitle.innerText = dailyHistory;
 
     getDailyHistory();
-    tableTitle.innerText = dailyHistory;
 });
 
 $(historyList).change(function () {

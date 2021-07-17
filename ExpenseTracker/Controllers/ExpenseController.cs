@@ -8,7 +8,7 @@ using ExpenseTracker.Data.Models;
 using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Infrastructure.Claims;
 using ExpenseTracker.Repository.IRepository;
-using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers
@@ -84,7 +84,7 @@ namespace ExpenseTracker.Controllers
             var expenseObj = await this.expenseRepository.GetExpense(expenseId);
             if (!await this.expenseRepository.DeleteExpense(expenseObj))
             {
-                ModelState.AddModelError("", $"Something went wrong when deleting the record {expenseObj.ExpenseFrom}");
+                ModelState.AddModelError("", $"Something went wrong when deleting the record {expenseObj.From}");
                 return StatusCode(500, ModelState);
             }
 

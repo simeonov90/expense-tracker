@@ -9,7 +9,7 @@ namespace ExpenseTracker.Data.Models.Dtos
     public class ExpenseCreateDto
     {
         [Required]
-        public string ExpenseFrom { get; set; }
+        public string From { get; set; }
 
         [Required]
         public double Value { get; set; }

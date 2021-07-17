@@ -11,7 +11,7 @@ namespace ExpenseTracker.Data.Models.Dtos
         [Key]
         public int Id { get; set; }
         [Required]
-        public string IncomeFrom { get; set; }
+        public string From { get; set; }
         [Required]
         public double Value { get; set; }
         [Required]

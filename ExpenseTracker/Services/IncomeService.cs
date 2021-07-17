@@ -2,7 +2,7 @@
 using ExpenseTracker.Data.Models;
 using ExpenseTracker.Data.Models.Dtos;
 using ExpenseTracker.Repository.IRepository;
-using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,6 @@ namespace ExpenseTracker.Services
         {
             var incomeObj = this.mapper.Map<Income>(incomeCreateDto);
             incomeObj.UserId = userId;
-
             var obj = await this.incomeRepository.CreateIncome(incomeObj);
 
             return obj;

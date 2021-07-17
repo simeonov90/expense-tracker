@@ -10,7 +10,7 @@ namespace ExpenseTracker.Data.Models.Dtos
     {
         public int Id { get; set; }
         [Required]
-        public string ExpenseFrom { get; set; }
+        public string From { get; set; }
         [Required]
         public double Value { get; set; }
         [Required]

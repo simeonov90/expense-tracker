@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ExpenseTracker.Models;
-using ExpenseTracker.Services.Contacts;
+using ExpenseTracker.Services.Contracts;
 using ExpenseTracker.Infrastructure.Claims;
 
 namespace ExpenseTracker.Controllers

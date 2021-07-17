@@ -8,14 +8,23 @@ namespace ExpenseTracker.Data.Models
 {
     public class Expense
     {
-        public Expense()
-        {
-            DateTime = DateTime.Now;
-        }
+        private string type;
+
         [Key]
         public int Id { get; set; }
+        public string Type
+        {
+            get
+            {
+                return type;
+            }
+            private set
+            {
+                this.type = "Expense";
+            }
+        }
         [Required]
-        public string ExpenseFrom { get; set; }
+        public string From { get; set; }
         [Required]
         public double Value { get; set; }
         [Required]
@@ -24,6 +33,11 @@ namespace ExpenseTracker.Data.Models
         [Required]
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        
+        public Expense()
+        {
+            Type = this.type;
+            DateTime = DateTime.Now;
+        }
+
     }
 }

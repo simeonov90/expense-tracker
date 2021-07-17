@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExpenseTracker.Services.Contacts
+namespace ExpenseTracker.Services.Contracts
 {
     public interface IExpenseService
     {
