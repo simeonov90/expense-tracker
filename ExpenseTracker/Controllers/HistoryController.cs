@@ -18,5 +18,10 @@ namespace ExpenseTracker.Controllers
         {
             return Ok(await this.historyService.GetAll(this.User.GetUserId()));
         }
+
+        public async Task<IActionResult> GetDaily()
+        {
+            return Ok(await this.historyService.GetDaily(this.User.GetUserId()));
+        }
     }
 }

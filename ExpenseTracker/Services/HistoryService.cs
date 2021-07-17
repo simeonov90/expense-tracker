@@ -45,5 +45,31 @@ namespace ExpenseTracker.Services
 
             return sortedObj;
         }
+
+        public async Task<ICollection<HistoryDailyDto>> GetDaily(string userId)
+        {
+            var dailyIncomes = await this.incomeRepository.GetAllIncome(userId);
+            var dailyExpenses = await this.expenseRepository.GetAllExpenses(userId);
+
+            var currDate = DateTime.Today;
+            var dailyIncomesObj = dailyIncomes.Where(a => a.UserId == userId && a.DateTime.Date == currDate).ToList();
+            var dailyExpensesObj = dailyExpenses.Where(a => a.UserId == userId && a.DateTime.Date == currDate).ToList();
+
+            var dailyHistory = new List<HistoryDailyDto>();
+
+            foreach (var obj in dailyIncomesObj)
+            {
+                dailyHistory.Add(this.mapper.Map<HistoryDailyDto>(obj));
+            }
+
+            foreach (var obj in dailyExpensesObj)
+            {
+                dailyHistory.Add(this.mapper.Map<HistoryDailyDto>(obj));
+            }
+
+            HashSet<HistoryDailyDto> sortedObj = dailyHistory.OrderByDescending(a => a.DateTime).ToHashSet();
+
+            return sortedObj;
+        }
     }
 }

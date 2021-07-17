@@ -88,7 +88,7 @@ async function getDailyIncomes() {
     responeData.forEach(function (item) {
         var date = new Date(item.dateTime);
         var div =
-            ` <tr class="table-success" >
+            ` <tr class="table-success">
                 <td scope="row">Income</td>
                 <td>${item.from}</td>
                 <td id="inc-table-value">${item.value}</td>
@@ -150,25 +150,31 @@ async function getDailyExpenses() {
 }
 
 async function getDailyHistory() {
-    const responseDailyExpenses = await fetch('Expense/GetDailyExpenses');
-    const responseDataDailyExpenses = await responseDailyExpenses.json();
-    const responseDailyIncomes = await fetch('Income/GetDailyIncomes');
-    const responseDataDailyIncomes = await responseDailyIncomes.json();
+    const responseDailyHistory = await fetch('History/GetDaily');
+    const responseDataDailyHistory = await responseDailyHistory.json();
+
+    const incomeHistory = "Income";
 
     var expenseSum = 0;
     var incomeSum = 0;
-    // Concatenate expense and income in one object and sort them by datetime in descending order
-    var objDailyHistory = responseDataDailyExpenses.concat(responseDataDailyIncomes);
-
-    objDailyHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
-
+    
     table.innerHTML = '';
 
-    objDailyHistory.forEach(function (item) {
+    responseDataDailyHistory.forEach(function (item) {
 
         var date = new Date(item.dateTime);
 
-        if (item.expenseFrom) {
+        if (item.type === incomeHistory) {
+            var div =
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.from}</td>
+                 <td id="inc-table-value">${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+
+            incomeSum += item.value           
+        } else {
             var div =
                 `<tr class="table-danger">
                  <td scope="row">Expense</td>
@@ -178,15 +184,6 @@ async function getDailyHistory() {
              </tr>`
 
             expenseSum += item.value;
-        } else {
-            var div =
-                `<tr class="table-success">
-                 <td scope="row">Income</td>
-                 <td>${item.from}</td>
-                 <td id="inc-table-value">${item.value}</td>
-                 <td>${date.toLocaleDateString()}</td>
-             </tr>`
-            incomeSum += item.value
         }
 
         table.innerHTML += div;
