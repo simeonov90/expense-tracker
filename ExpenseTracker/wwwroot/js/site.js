@@ -60,7 +60,7 @@ function updateBalance(income, expense) {
 }
 
 async function getAllIncomes() {
-    const response = await fetch('Income/GetAllIncomes');
+    const response = await fetch(`Income/GetAllIncomes/${page}/${itemsPerPage}`);
     const responeData = await response.json();
     var incomeSum = 0;
     table.innerHTML = '';

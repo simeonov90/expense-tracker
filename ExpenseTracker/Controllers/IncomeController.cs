@@ -57,16 +57,10 @@ namespace ExpenseTracker.Controllers
             return Ok(objDto);
         }
 
-        public async Task<IActionResult> GetAllIncomes()
+        [HttpGet("[controller]/[action]/{page}/{itemsPerPage}")]
+        public async Task<IActionResult> GetAllIncomes(int page, int itemsPerPage)
         {
-            var objList = await this.incomeRepository.GetAllIncomes(this.User.GetUserId());
-            var objDto = new List<IncomeDto>();
-            foreach (var obj in objList)
-            {
-                objDto.Add(this.mapper.Map<IncomeDto>(obj));
-            }
-
-            return Ok(objDto);
+            return Ok(await this.incomeService.AllIncomes(this.User.GetUserId(), page, itemsPerPage));
         }
 
         public async Task<IActionResult> GetDailyIncomes()

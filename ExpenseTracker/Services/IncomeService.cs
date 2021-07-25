@@ -34,7 +34,7 @@ namespace ExpenseTracker.Services
         {         
             var currDate = DateTime.Today;
             var incomesObj = await this.incomeRepository.GetAllIncomes(userId);
-            var dailyObj = incomesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate).ToList();
+            var dailyObj = incomesObj.Where(a => a.DateTime.Date == currDate).ToList();
             var objDto = new List<IncomeDailyDto>();
 
             foreach (var obj in dailyObj)
@@ -50,6 +50,20 @@ namespace ExpenseTracker.Services
             var incomes = await this.incomeRepository.GetAllIncomes(userId);
             var sum = incomes.Select(a => a.Value).ToList();
             return sum.Sum();
+        }
+
+        public async Task<ICollection<IncomeAllDto>> AllIncomes(string userId, int page, int itemsPerPage)
+        {
+            var incomes = await this.incomeRepository.GetAllIncomes(userId);
+            var pagingIncomes = incomes.Skip((page - 1) * itemsPerPage)
+                .Take(itemsPerPage).ToList();
+            var incomesObj = new List<IncomeAllDto>();
+            foreach (var obj in pagingIncomes)
+            {
+                incomesObj.Add(this.mapper.Map<IncomeAllDto>(obj));
+            }
+
+            return incomesObj;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace ExpenseTracker.ExpenseTrackerMapper
             CreateMap<Income, IncomeCreateDto>().ReverseMap();
             CreateMap<Income, IncomeDto>().ReverseMap();
             CreateMap<Income, IncomeDailyDto>().ReverseMap();
+            CreateMap<Income, IncomeAllDto>().ReverseMap();
             CreateMap<Income, HistoryAllDto>().ReverseMap();
             CreateMap<Income, HistoryDailyDto>().ReverseMap();
             CreateMap<Income, HistoryByDateDto>().ReverseMap();
