@@ -66,8 +66,7 @@
         <div class="history">
             <select id="history">
                 <optgroup label="History">
-                    <option selected hidden>History</option>
-                    <option value="Daily history">daily history</option>
+                    <option selected value="Daily history">daily history</option>
                     <option value="All history">all history</option>
                     <option value="By date">by date</option>
                 </optgroup>
@@ -96,6 +95,12 @@
                 <tbody id="table">
                 </tbody>
             </table>
+            
+            <div id="pagination">
+                <p>Previous/Next</p>
+                <button id="btn-previous" value="0">❮</button>
+                <button id="btn-next" value="1">❯</button>
+            </div>
         </div>
 
     </div>

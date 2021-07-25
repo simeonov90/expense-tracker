@@ -10,5 +10,6 @@ namespace ExpenseTracker.Services.Contracts
     {
         Task<bool> CreateExpense(ExpenseCreateDto expenseCreateDto, string userId);
         Task<ICollection<ExpenseDailyDto>> DailyExpenses(string userId);
+        Task<double> SumFromExpenses(string userId);
     }
 }

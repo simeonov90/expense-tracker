@@ -4,6 +4,7 @@ using ExpenseTracker.Repository.IRepository;
 using ExpenseTracker.Services.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,34 +22,76 @@ namespace ExpenseTracker.Services
             this.expenseRepository = expenseRepository;
             this.mapper = mapper;
         }
+
         public async Task<ICollection<HistoryAllDto>> GetAll(string userId)
         {
-            var allIncomes = await this.incomeRepository.GetAllIncome(userId);
+            var allIncomes = await this.incomeRepository.GetAllIncomes(userId);
             var allExpenses = await this.expenseRepository.GetAllExpenses(userId);
 
-            var allIncomesObj = allIncomes.Where(a => a.UserId == userId).ToList();
-            var allExpensesObj = allExpenses.Where(a => a.UserId == userId).ToList();
+            var allHistory = new List<HistoryAllDto>();
 
-            var allHistory = new List<HistoryAllDto>();    
-
-            foreach (var obj in allIncomesObj)
+            foreach (var obj in allIncomes)
             {
                 allHistory.Add(this.mapper.Map<HistoryAllDto>(obj));
             }
 
-            foreach (var obj in allExpensesObj)
+            foreach (var obj in allExpenses)
             {
                 allHistory.Add(this.mapper.Map<HistoryAllDto>(obj));
             }
 
-            HashSet<HistoryAllDto> sortedObj = allHistory.OrderByDescending(a => a.DateTime).ToHashSet();
+            HashSet<HistoryAllDto> sortedHistory = allHistory.OrderByDescending(a => a.DateTime).ToHashSet();
 
-            return sortedObj;
+            return sortedHistory;
+        }
+
+        public async Task<ICollection<HistoryAllDto>> GetAll(string userId, int page, int itemsPerPage)
+        {
+            var allHistory = await this.GetAll(userId);
+
+            var pagingHistory = allHistory
+                .Skip((page - 1) * itemsPerPage)
+                .Take(itemsPerPage).ToList();
+
+            return pagingHistory;
+        }
+
+        public async Task<ICollection<HistoryByDateDto>> GetByDate(string userId, DateTime from, DateTime to)
+        {
+            var allIncomes = await this.incomeRepository.GetAllIncomes(userId);
+            var allExpenses = await this.expenseRepository.GetAllExpenses(userId);
+
+            var byDateHistory = new List<HistoryByDateDto>();
+
+            foreach (var obj in allIncomes)
+            {
+                byDateHistory.Add(this.mapper.Map<HistoryByDateDto>(obj));
+            }
+
+            foreach (var obj in allExpenses)
+            {
+                byDateHistory.Add(this.mapper.Map<HistoryByDateDto>(obj));
+            }
+
+            HashSet<HistoryByDateDto> sortedHistory = byDateHistory.Where(a => a.DateTime.Date >= from && a.DateTime.Date <= to).OrderByDescending(a => a.DateTime).ToHashSet();
+
+            return sortedHistory;
+        }
+
+        public async Task<ICollection<HistoryByDateDto>> GetByDate(string userId, DateTime from, DateTime to, int page, int itemsPerPage)
+        {
+            var byDate = await this.GetByDate(userId, from, to);
+
+            var pagingByDateHistory = byDate
+                .Skip((page - 1) * itemsPerPage)
+                .Take(itemsPerPage).ToList();
+
+            return pagingByDateHistory;
         }
 
         public async Task<ICollection<HistoryDailyDto>> GetDaily(string userId)
         {
-            var dailyIncomes = await this.incomeRepository.GetAllIncome(userId);
+            var dailyIncomes = await this.incomeRepository.GetAllIncomes(userId);
             var dailyExpenses = await this.expenseRepository.GetAllExpenses(userId);
 
             var currDate = DateTime.Today;

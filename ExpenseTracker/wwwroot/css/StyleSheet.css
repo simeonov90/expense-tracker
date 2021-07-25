@@ -98,6 +98,11 @@ h4 {
     padding: 5px 0 5px 0;
 }
 
+#pagination {
+    display: none;
+    text-align:center;
+}
+
 
 
 

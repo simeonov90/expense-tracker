@@ -59,7 +59,7 @@ namespace ExpenseTracker.Controllers
 
         public async Task<IActionResult> GetAllIncomes()
         {
-            var objList = await this.incomeRepository.GetAllIncome(this.User.GetUserId());
+            var objList = await this.incomeRepository.GetAllIncomes(this.User.GetUserId());
             var objDto = new List<IncomeDto>();
             foreach (var obj in objList)
             {
@@ -90,6 +90,11 @@ namespace ExpenseTracker.Controllers
             }
 
             return NoContent();
+        }
+
+        public async Task<IActionResult> SumFromIncomes()
+        {
+            return Ok(await this.incomeService.SumFromIncomes(this.User.GetUserId()));
         }
     }
 }

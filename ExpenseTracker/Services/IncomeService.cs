@@ -33,7 +33,7 @@ namespace ExpenseTracker.Services
         public async Task<ICollection<IncomeDailyDto>> DailyIncomes(string userId)
         {         
             var currDate = DateTime.Today;
-            var incomesObj = await this.incomeRepository.GetAllIncome(userId);
+            var incomesObj = await this.incomeRepository.GetAllIncomes(userId);
             var dailyObj = incomesObj.Where(s => s.UserId == userId && s.DateTime.Date == currDate).ToList();
             var objDto = new List<IncomeDailyDto>();
 
@@ -43,6 +43,13 @@ namespace ExpenseTracker.Services
             }
            
             return objDto;
+        }
+
+        public async Task<double> SumFromIncomes(string userId)
+        {
+            var incomes = await this.incomeRepository.GetAllIncomes(userId);
+            var sum = incomes.Select(a => a.Value).ToList();
+            return sum.Sum();
         }
     }
 }

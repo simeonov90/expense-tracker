@@ -4,6 +4,9 @@ const btnCloseIncomeForm = document.getElementById('btn-close-income-form');
 const btnCloseExpenseForm = document.getElementById('btn-close-expense-form');
 const btnIncomeRequest = document.getElementById('btn-income-request');
 const btnExpenseRequest = document.getElementById('btn-expense-request');
+const paginationForm = document.getElementById('pagination');
+const btnPrevious = document.getElementById('btn-previous');
+const btnNext = document.getElementById('btn-next');
 
 const errorIncomeFromMessage = document.getElementById('error-income-from');
 const errorIncomeValueMessage = document.getElementById('error-income-value');
@@ -34,8 +37,8 @@ const historyList = document.getElementById('history');
 const tableTitle = document.getElementById('table-title');
 // RegEx match only numbers and decimal numbers
 const pattern = /^[0-9]+([.][0-9]+)?$/;
-
-
+const itemsPerPage = 15;
+var page = 1;
 incomeSubmitForm.style.display = "none";
 expenseSubmitForm.style.display = "none";
 
@@ -78,6 +81,7 @@ async function getAllIncomes() {
     });
 
     updateBalance(incomeSum, null);
+    checkForPaging(responeData.length);
 }
 
 async function getDailyIncomes() {
@@ -101,6 +105,7 @@ async function getDailyIncomes() {
     });
 
     updateBalance(incomeSum, null);
+    checkForPaging(responeData.length);
 }
 
 async function getAllExpenses() {
@@ -124,6 +129,7 @@ async function getAllExpenses() {
     });
 
     updateBalance(null, expenseSum);
+    checkForPaging(responeData.length);
 }
 
 async function getDailyExpenses() {
@@ -147,6 +153,7 @@ async function getDailyExpenses() {
     });
 
     updateBalance(null, expenseSum);
+    checkForPaging(responeData.length);
 }
 
 async function getDailyHistory() {
@@ -157,7 +164,7 @@ async function getDailyHistory() {
 
     var expenseSum = 0;
     var incomeSum = 0;
-    
+
     table.innerHTML = '';
 
     responseDataDailyHistory.forEach(function (item) {
@@ -173,7 +180,7 @@ async function getDailyHistory() {
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
 
-            incomeSum += item.value           
+            incomeSum += item.value
         } else {
             var div =
                 `<tr class="table-danger">
@@ -190,27 +197,64 @@ async function getDailyHistory() {
     });
 
     updateBalance(incomeSum, expenseSum);
+    checkForPaging(responseDataDailyHistory.length);
 }
 async function getAllHistory() {
-    const responseAllHistory = await fetch('History/GetAll');
+    const responseIncomeSum = await fetch('income/sumfromincomes');
+    const responseDataIncomeSum = await responseIncomeSum.json();
+    const responseExpenseSum = await fetch('expense/sumfromexpenses');
+    const responseDataExpenseSum = await responseExpenseSum.json();
+    const responseAllHistory = await fetch(`history/getall/${page}/${itemsPerPage}`);
     const responseDataAllHistory = await responseAllHistory.json();
-
-    const incomeHistory = "Income";
-
-    var expenseSum = 0;
-    var incomeSum = 0;
 
     table.innerHTML = '';
     responseDataAllHistory.forEach(function (item) {
-
         var date = new Date(item.dateTime);
 
-        if (item.type === incomeHistory) {
+        if (item.type === "Income") {
             var div =
                 `<tr class="table-success">
                  <td scope="row">Income</td>
                  <td>${item.from}</td>
-                 <td id="exp-table-value">-${item.value}</td>
+                 <td id="exp-table-value">${(item.value)}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+        } else {
+            var div =
+
+                `<tr class="table-danger">
+                 <td scope="row">Expense</td>
+                 <td>${item.from}</td>
+                 <td id="inc-table-value">-${item.value}</td>
+                 <td>${date.toLocaleDateString()}</td>
+             </tr>`
+        }
+        table.innerHTML += div;
+    });
+
+    updateBalance(responseDataIncomeSum, responseDataExpenseSum);
+    checkForPaging(responseDataAllHistory.length);
+}
+async function getByDate() {
+    const dateFromValue = document.getElementById('date-from').value;
+    const dateToValue = document.getElementById('date-to').value;
+    const responseGetByDate = await fetch(`history/getbydate/${dateFromValue}/${dateToValue}/${page}/${itemsPerPage}`);
+    const responseDataGetByDate = await responseGetByDate.json();
+
+    var expenseSum = 0;
+    var incomeSum = 0;
+    table.innerHTML = '';
+
+    responseDataGetByDate.forEach(function (item) {
+
+        var date = new Date(item.dateTime);
+
+        if (item.type === "Income") {
+            var div =
+                `<tr class="table-success">
+                 <td scope="row">Income</td>
+                 <td>${item.from}</td>
+                 <td id="inc-table-value">${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
 
@@ -220,65 +264,18 @@ async function getAllHistory() {
                 `<tr class="table-danger">
                  <td scope="row">Expense</td>
                  <td>${item.from}</td>
-                 <td id="inc-table-value">${item.value}</td>
+                 <td id="exp-table-value">-${item.value}</td>
                  <td>${date.toLocaleDateString()}</td>
              </tr>`
+
             expenseSum += item.value
         }
 
         table.innerHTML += div;
     });
-
+    
     updateBalance(incomeSum, expenseSum);
-}
-async function getByDate() {
-    const dateFromValue = document.getElementById('date-from').value;
-    const dateToValue = document.getElementById('date-to').value;
-
-    const responseExpenses = await fetch('Expense/GetAllExpenses');
-    const responseDataExpenses = await responseExpenses.json();
-    const responseIncomes = await fetch('Income/GetAllIncomes');
-    const responseDataIncomes = await responseIncomes.json();
-
-    var expenseSum = 0;
-    var incomeSum = 0;
-    // Concatenate expense and income in one object then filter by choosen date and sort them by datetime in descending order
-    var objHistory = responseDataExpenses.concat(responseDataIncomes);
-    var filterHistory = objHistory.filter(date => date.dateTime >= dateFromValue && date.dateTime <= dateToValue);
-    var sortedHistory = filterHistory.sort((a, b) => (a.dateTime < b.dateTime ? 1 : -1));
-
-    table.innerHTML = '';
-
-    sortedHistory.forEach(function (item) {
-
-        var date = new Date(item.dateTime);
-
-        if (item.expenseFrom) {
-            var div =
-                `<tr class="table-danger">
-                 <td scope="row">Expense</td>
-                 <td>${item.from}</td>
-                 <td id="exp-table-value">-${item.value}</td>
-                 <td>${date.toLocaleDateString()}</td>
-             </tr>`
-
-            expenseSum += item.value;
-        } else {
-            var div =
-                `<tr class="table-success">
-                 <td scope="row">Income</td>
-                 <td>${item.from}</td>
-                 <td id="inc-table-value">${item.value}</td>
-                 <td>${date.toLocaleDateString()}</td>
-             </tr>`
-
-            incomeSum += item.value
-        }
-
-        table.innerHTML += div;
-    });
-
-    updateBalance(incomeSum, expenseSum);
+    checkForPaging(responseDataGetByDate.length);
 
 }
 
@@ -308,7 +305,6 @@ function showHistory() {
     const allIncomes = "All incomes";
     const dailyExpenses = "Daily expenses";
     const allExpenses = "All expenses";
-
     const selected = historyList.options[historyList.selectedIndex].value;
 
     if (selected !== byDate) {
@@ -388,7 +384,7 @@ function checkIncomeRequiredField(string, value) {
 
     if (string === "") {
         errorIncomeFromMessage.style.color = '#e74c3c';
-        errorIncomeFromMessage.innerText = `This field is required.`;   
+        errorIncomeFromMessage.innerText = `This field is required.`;
     }
 
     if (value === "") {
@@ -443,7 +439,7 @@ async function sendIncomeRequest() {
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getDailyHistory();
+                showHistory();
             }
         };
         xhr.open("POST", url, true);
@@ -451,7 +447,7 @@ async function sendIncomeRequest() {
         let body = await JSON.stringify({ from: incomeFrom.value, value: incomeValue.value });
         xhr.send(body);
         incomeForm.reset();
-    }     
+    }
 }
 
 async function sendExpenseRequest() {
@@ -459,29 +455,48 @@ async function sendExpenseRequest() {
     let url = '/Expense/CreateExpense';
     let xhr = new XMLHttpRequest();
 
-    if (checkExpenseRequiredField(expenseFrom.value, expenseValue.value)) {        
+    if (checkExpenseRequiredField(expenseFrom.value, expenseValue.value)) {
         xhr.open("POST", url, true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                getDailyHistory();
+                showHistory();
             }
         };
         let body = await JSON.stringify({ from: expenseFrom.value, value: expenseValue.value });
         xhr.send(body);
         expenseForm.reset();
     }
-    
+
+}
+function checkForPaging(length) {
+    if (page === 1 && length >= itemsPerPage) {
+        paginationForm.style.display = 'block';  
+    } else if (page <= 1 && length < itemsPerPage) {
+        paginationForm.style.display = 'none';
+    }
+
+    if (page > 1) {
+        btnPrevious.style.visibility = 'visible';
+    } else {
+        btnPrevious.style.visibility = 'hidden';
+    }
+
+    if (length < 14) {
+        btnNext.style.visibility = 'hidden';
+    } else {
+        btnNext.style.visibility = 'visible';
+    }
 }
 
 $(table).ready(function () {
-    const dailyHistory = "Daily history";
-    tableTitle.innerText = dailyHistory;
+    tableTitle.innerText = "Daily History";
 
     getDailyHistory();
 });
 
 $(historyList).change(function () {
+    page = 1;
     showHistory();
 });
 
@@ -509,8 +524,23 @@ $(btnExpenseRequest).click(function () {
     sendExpenseRequest();
 });
 
+$(btnNext).click(function () {
+    page++;
+    if (historyList.value === "By date") {
+        getByDate();
+    } else {
+        showHistory();
+    }
+});
 
-
+$(btnPrevious).click(function () {
+    page--;
+    if (historyList.value === "By date") {
+        getByDate();
+    } else {
+        showHistory();
+    }
+});
 
 
 

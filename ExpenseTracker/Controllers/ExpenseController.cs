@@ -92,5 +92,10 @@ namespace ExpenseTracker.Controllers
 
             return NoContent();
         }
+
+        public async Task<IActionResult> SumFromExpenses()
+        {
+            return Ok(await this.expenseService.SumFromExpenses(this.User.GetUserId()));
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace ExpenseTracker.Repository.IRepository
 {
     public interface IIncomeRepository
     {
-        Task<ICollection<Income>> GetAllIncome(string userId);
+        Task<ICollection<Income>> GetAllIncomes(string userId);
         Task<Income> GetIncome(int incomeId);
         Task<bool> CreateIncome(Income income);
         Task<bool> DeleteIncome(Income income);

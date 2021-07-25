@@ -45,5 +45,12 @@ namespace ExpenseTracker.Services
 
             return objDto;
         }
+
+        public async Task<double> SumFromExpenses(string userId)
+        {
+            var expenses = await this.expenseRepository.GetAllExpenses(userId);
+            var sum = expenses.Select(a => a.Value).ToList();
+            return sum.Sum();
+        }
     }
 }

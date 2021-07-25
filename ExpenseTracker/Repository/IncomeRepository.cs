@@ -30,7 +30,7 @@ namespace ExpenseTracker.Repository
             return await Save();
         }
 
-        public async Task<ICollection<Income>> GetAllIncome(string userId)
+        public async Task<ICollection<Income>> GetAllIncomes(string userId)
         {
             return await this.db.Incomes.Where(a => a.UserId == userId).OrderByDescending(a => a.DateTime).ToListAsync();
         }
